@@ -9,21 +9,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { UserCircle2 } from "lucide-react";
+import { UserCircle2, LoaderCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleAdminLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Add your admin login logic here
-    console.log("Admin login:", email, password);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleAdminLogin = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
   };
 
   const handleGuestLogin = () => {
-    // Add your guest login logic here
     console.log("Guest login");
   };
 
@@ -66,7 +70,11 @@ const AuthPage = () => {
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <Button className="w-full" onClick={handleAdminLogin}>
-            Admin Login
+            {isLoading ? (
+              <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              "Admin Login"
+            )}
           </Button>
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
