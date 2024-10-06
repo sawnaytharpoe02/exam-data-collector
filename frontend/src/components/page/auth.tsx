@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
@@ -16,34 +10,55 @@ const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAdminLoading, setIsAdminLoading] = useState<boolean>(false);
+  const [isExamerLoading, setIsExamerLoading] = useState<boolean>(false);
 
   const handleAdminLogin = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    setIsAdminLoading(true);
+    try {
+      setTimeout(() => {
+        setIsAdminLoading(true);
+      }, 2000);
+      // login logic for admin send exam data list req to backend
+    } catch (error) {
+      // error handling
+    } finally {
+      setIsAdminLoading(false);
+    }
   };
 
-  const handleGuestLogin = () => {
-    console.log("Guest login");
+  const handleExamerLogin = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    setIsExamerLoading(true);
+    try {
+      setTimeout(() => {
+        setIsExamerLoading(true);
+      }, 2000);
+
+      // lgoin logic for examer send exam data list req to backend
+    } catch (error) {
+      // error handling
+    } finally {
+      setIsExamerLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-100 to-blue-100">
+    <div className="min-h-screen flex items-center justify-center flex-col bg-gradient-to-r from-pink-100 to-blue-100 p-5 md:p-0">
       <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center space-x-2">
+        <div className="mb-6 flex items-center justify-center flex-col">
+          <div className="flex items-center justify-center space-x-2 mt-4 mb-2">
             <CardTitle className="text-2xl font-bold text-center">
               Exam Data Collector
             </CardTitle>
           </div>
-          <p className="text-center text-sm text-gray-500">
-            Welcome back! Please sign in to continue.
+          <p className="text-center text-sm text-gray-500 px-5">
+            We offer comprehensive services designed to make your preparation
+            journey smooth and successful, helping you confidently prepare for
+            and ace your exam.
           </p>
-        </CardHeader>
+        </div>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -69,11 +84,17 @@ const AuthPage = () => {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
-          <Button className="w-full" onClick={handleAdminLogin}>
-            {isLoading ? (
-              <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+          <Button
+            className="w-full"
+            onClick={handleAdminLogin}
+            disabled={isAdminLoading}>
+            {isAdminLoading ? (
+              <>
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />{" "}
+                <span>Logging In...</span>
+              </>
             ) : (
-              "Admin Login"
+              "Log In"
             )}
           </Button>
           <div className="relative">
@@ -86,21 +107,29 @@ const AuthPage = () => {
               </span>
             </div>
           </div>
-          <Link to="/">
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleGuestLogin}>
-              <UserCircle2 className="mr-2 h-4 w-4" />
-              Continue as Guest
-            </Button>
-          </Link>
+          <Button
+            className="w-full"
+            variant="outline"
+            onClick={handleExamerLogin}
+            disabled={isExamerLoading}>
+            {isExamerLoading ? (
+              <>
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />{" "}
+                <span>Loading...</span>
+              </>
+            ) : (
+              <>
+                <UserCircle2 className="mr-2 h-4 w-4" />{" "}
+                <span>Continue as examer</span>
+              </>
+            )}
+          </Button>
         </CardFooter>
       </Card>
       <img
         src="/data_collector_guy.png"
         alt="Data Collector Guy"
-        className="absolute bottom-3 right-4 h-48 w-48 animate-bounce"
+        className="absolute bottom-3 right-4 h-48 w-48 animate-bounce hidden md:block cursor-pointer"
       />
     </div>
   );
