@@ -2,16 +2,15 @@ export interface IExamData {
   id: number;
   exam_type: string;
   description: string;
-  exam_language: string | null;
+  section: string | null;
 }
-
 
 export interface IExamType {
   id: number;
   name: string;
 }
 
-export interface IExamLanguage {
+export interface ISection {
   id: number;
   name: string;
 }

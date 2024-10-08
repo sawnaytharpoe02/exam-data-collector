@@ -2,7 +2,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
-import { IExamType, IExamLanguage } from "@/types";
+import { IExamType, ISection } from "@/types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -39,25 +39,34 @@ const FormPage = () => {
       prometric_id: "",
       password: "",
       name: "",
+      dob: undefined,
       exam_type: "",
-      exam_language: "",
+      section: undefined,
       month: "",
       date: undefined,
     },
   });
 
+  const _exam_type = form.watch("exam_type");
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    if (!_exam_type.includes("Kaigo / Nursing")) {
+      values.section = null;
+    }
+
+    console.log("Submit value", values);
   };
 
   const examTypes: IExamType[] = [
-    { id: 1, name: "Kaigo" },
-    { id: 2, name: "Nursing" },
-    { id: 3, name: "JFT" },
+    { id: 1, name: "Japan Foundation Test for Basic Japanese(JFT-Basic)" },
+    {
+      id: 2,
+      name: "Kaigo / Nursing care Japanese language evaluation test",
+    },
+    { id: 3, name: "Food service industry Specified Skilled Worker (i) test" },
   ];
-  const examLanguages: IExamLanguage[] = [
+  const sections: ISection[] = [
     { id: 1, name: "JP" },
-    { id: 2, name: "ENG" },
     { id: 3, name: "MM" },
   ];
   const availableMonths: string[] = ["Jan", "Nov", "March"];
@@ -121,6 +130,48 @@ const FormPage = () => {
             )}
           />
 
+          {/* Date of birth */}
+          <FormField
+            control={form.control}
+            name="dob"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Date of birth</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}>
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Select prefer date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      captionLayout="dropdown-buttons"
+                      fromYear={1900}
+                      toYear={new Date().getFullYear()}
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      hideCaptionLabel
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           {/* Exam Type */}
           <FormField
             control={form.control}
@@ -149,36 +200,38 @@ const FormPage = () => {
             )}
           />
 
-          {/* Exam Languages */}
-          <FormField
-            control={form.control}
-            name="exam_language"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Exam Langauges</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1">
-                    {examLanguages.map((val) => (
-                      <FormItem
-                        key={val.id}
-                        className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value={val.name} />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {val.name}
-                        </FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* Section */}
+          {_exam_type.includes("Kaigo / Nursing") && (
+            <FormField
+              control={form.control}
+              name="section"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Sections </FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value || ""}
+                      className="flex flex-col space-y-1">
+                      {sections.map((val) => (
+                        <FormItem
+                          key={val.id}
+                          className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value={val.name} />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            {val.name}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           {/* Available Months */}
           <FormField
