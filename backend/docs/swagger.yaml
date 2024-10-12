@@ -1,0 +1,46 @@
+definitions:
+  models.User:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /products/get_all_products:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Get all products
+      tags:
+      - Products
+  /users/get_all_users:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Get all users
+      tags:
+      - Users
+swagger: "2.0"
