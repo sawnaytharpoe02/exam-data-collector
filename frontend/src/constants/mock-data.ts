@@ -14,6 +14,8 @@ export const examLists: IExamData[] = [
     description: "Ministry of Health, Labour and Welfare",
     section: "JP",
   },
+
+
   {
     id: 3,
     exam_type: "Food service industry Specified Skilled Worker (i) test",

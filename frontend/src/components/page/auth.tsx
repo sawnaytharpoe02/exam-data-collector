@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { UserCircle2, LoaderCircle } from "lucide-react";
-import { Link } from "react-router-dom";
 
 const AuthPage = () => {
   const [email, setEmail] = useState("");
