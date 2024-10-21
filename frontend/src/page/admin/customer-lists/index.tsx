@@ -1,7 +1,7 @@
 import { Customer } from "@/types";
-import { CustomerDataTable } from "./dashboard/customers-data-table";
-import { columns } from "./dashboard/customers-columns";
 import { useEffect, useState } from "react";
+import { columns } from "./customers-columns";
+import { CustomerDataTable } from "./customers-data-table";
 
 async function getData(): Promise<Customer[]> {
   // Fetch data from your API here.
@@ -129,7 +129,7 @@ async function getData(): Promise<Customer[]> {
   ];
 }
 
-const DashboardPage = () => {
+const CustomerListsPage = () => {
   const [data, setData] = useState<Customer[]>([]);
 
   useEffect(() => {
@@ -142,12 +142,10 @@ const DashboardPage = () => {
   }, []);
 
   return (
-    <div>
-      <div className="p-5">
-        <CustomerDataTable columns={columns} data={data} />
-      </div>
+    <div className="p-1 lg:p-4">
+      <CustomerDataTable columns={columns} data={data} />
     </div>
   );
 };
 
-export default DashboardPage;
+export default CustomerListsPage;

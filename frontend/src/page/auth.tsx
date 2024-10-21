@@ -1,11 +1,13 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoaderCircle, UserCircle2 } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { UserCircle2, LoaderCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AuthPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -27,15 +29,14 @@ const AuthPage = () => {
     }
   };
 
-  const handleExamerLogin = (event: React.SyntheticEvent) => {
+  const handleExamerLogin = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     setIsExamerLoading(true);
     try {
-      setTimeout(() => {
-        setIsExamerLoading(true);
-      }, 2000);
-
-      // lgoin logic for examer send exam data list req to backend
+      // Simulate fetching data from backend (replace with actual API call)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      
+      navigate("/");
     } catch (error) {
       // error handling
     } finally {
