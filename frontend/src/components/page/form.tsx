@@ -1,10 +1,11 @@
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { IExamType, ISection } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -15,22 +16,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { formSchema } from "@/schemas";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { formSchema } from "@/schemas";
+import dayjs from "dayjs";
 
 const FormPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -41,7 +42,7 @@ const FormPage = () => {
       name: "",
       dob: undefined,
       exam_type: "",
-      section: undefined,
+      section: null,
       month: "",
       date: undefined,
     },
@@ -50,11 +51,21 @@ const FormPage = () => {
   const _exam_type = form.watch("exam_type");
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    if (!_exam_type.includes("Kaigo / Nursing")) {
-      values.section = null;
-    }
+    const payload = {
+      prometric_id: values.prometric_id,
+      password: values.password,
+      name: values.name,
+      dob: dayjs(values.dob).format("YYYY-MM-DD"),
+      exam_type: values.exam_type,
+      section: !_exam_type.includes("Kaigo / Nursing")
+        ? (values.section = null)
+        : values.section,
+      date: dayjs(values.date).date().toString(),
+      month: values.month,
+      role: "user"
+    };
 
-    console.log("Submit value", values);
+    console.log("Submit value", payload);
   };
 
   const examTypes: IExamType[] = [

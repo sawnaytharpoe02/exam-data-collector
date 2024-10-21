@@ -14,8 +14,6 @@ export const examLists: IExamData[] = [
     description: "Ministry of Health, Labour and Welfare",
     section: "JP",
   },
-
-
   {
     id: 3,
     exam_type: "Food service industry Specified Skilled Worker (i) test",
@@ -29,7 +27,6 @@ export const examLists: IExamData[] = [
   //   description: "National Chamber of Agriculture",
   //   section: null,
   // },
-
   // {
   //   id: 5,
   //   exam_type: "飲食料品製造業特定技能1号技能測定試験",

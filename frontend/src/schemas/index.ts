@@ -27,7 +27,7 @@ export const formSchema = z.object({
     }
   ),
   exam_type: z.string().nonempty({ message: "Please select an exam type." }),
-  section: z.string().nullable().optional(),
+  section: z.string().nullable(),
   month: z.string().nonempty({ message: "Month is required." }),
   date: z.date(),
 });

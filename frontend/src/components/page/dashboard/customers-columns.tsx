@@ -1,25 +1,25 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { Customer } from "@/types";
-import { MoreHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { Customer } from "@/types";
+import { ColumnDef } from "@tanstack/react-table";
+import clsx from "clsx";
 import {
-  Circle,
-  Clock,
+  ArrowUpDown,
   CheckCircle,
   CheckCircle2,
+  Circle,
+  Clock,
+  MoreHorizontal,
   XCircle,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import clsx from "clsx";
-import { ArrowUpDown } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 
 const statusBadgeMapping = {
   open: {
