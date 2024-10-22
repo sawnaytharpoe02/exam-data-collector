@@ -7,7 +7,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
-    path: "/auth",
+    path: "/auth/login",
     element: <AuthPage />,
   },
   {

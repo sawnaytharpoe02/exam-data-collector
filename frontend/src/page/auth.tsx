@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLogin } from "@/hooks/useLogin";
 import { LoaderCircle, UserCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,22 +12,13 @@ const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [isAdminLoading, setIsAdminLoading] = useState<boolean>(false);
   const [isExamerLoading, setIsExamerLoading] = useState<boolean>(false);
+
+  const { mutate: login, isPending: isAdminPending, error } = useLogin();
 
   const handleAdminLogin = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    setIsAdminLoading(true);
-    try {
-      setTimeout(() => {
-        setIsAdminLoading(true);
-      }, 2000);
-      // login logic for admin send exam data list req to backend
-    } catch (error) {
-      // error handling
-    } finally {
-      setIsAdminLoading(false);
-    }
+    login({ email, password });
   };
 
   const handleExamerLogin = async (event: React.SyntheticEvent) => {
@@ -35,7 +27,7 @@ const AuthPage = () => {
     try {
       // Simulate fetching data from backend (replace with actual API call)
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      
+
       navigate("/");
     } catch (error) {
       // error handling
@@ -87,8 +79,8 @@ const AuthPage = () => {
           <Button
             className="w-full"
             onClick={handleAdminLogin}
-            disabled={isAdminLoading}>
-            {isAdminLoading ? (
+            disabled={isAdminPending || (!email || !password)}>
+            {isAdminPending ? (
               <>
                 <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />{" "}
                 <span>Logging In...</span>
@@ -97,6 +89,10 @@ const AuthPage = () => {
               "Log In"
             )}
           </Button>
+          {error && (
+            <p className="text-sm text-destructive">Error: {error?.message}</p>
+          )}
+
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />

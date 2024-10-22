@@ -4,12 +4,20 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  useReactTable,
-  SortingState,
   getSortedRowModel,
+  SortingState,
+  useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
 
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -18,13 +26,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  MagnifyingGlassIcon,
+  MixerHorizontalIcon,
+  PinBottomIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
 
 interface CustomerDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -57,33 +64,57 @@ export function CustomerDataTable<TData, TValue>({
   return (
     <>
       {/* Data Table Navigation Filtering and Searching */}
-      <div className="flex items-center py-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
+      <div className="flex lg:items-center flex-col lg:flex-row justify-between mb-4 gap-2">
+        <div>
+          <div className="flex w-full max-w-sm items-center space-x-2">
+            <Input
+              type="email"
+              placeholder="Customer name"
+              className="text-sm h-8"
+            />
+            <Button type="submit" size={"sm"}>
+              <MagnifyingGlassIcon className="mr-2" /> Search
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }>
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </div>
+        </div>
+
+        <div className="space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size={"sm"}>
+                <MixerHorizontalIcon className="mr-2" /> View
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }>
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button variant={"destructive"} disabled size={"sm"}>
+            <TrashIcon className="mr-2" /> Delete
+          </Button>
+
+          <Button variant={"outline"} size={"sm"}>
+            <PinBottomIcon className="mr-2" /> Export
+          </Button>
+        </div>
       </div>
+
       {/* Show Customers Data Table */}
       <div className="rounded-md border">
         <Table>

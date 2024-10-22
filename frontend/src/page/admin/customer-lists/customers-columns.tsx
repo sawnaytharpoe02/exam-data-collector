@@ -28,7 +28,7 @@ const statusBadgeMapping = {
     classNames: "bg-blue-100 text-blue-800 hover:bg-blue-200",
   },
   inProgress: {
-    text: "In Progress",
+    text: "Progress",
     icon: Clock,
     classNames: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
   },
@@ -51,21 +51,33 @@ const statusBadgeMapping = {
 
 export const columns: ColumnDef<Customer>[] = [
   {
-    id: "select",
+    id: "id",
+    accessorKey: "id",
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(value) => {
+          table.toggleAllPageRowsSelected(!!value);
+
+          const allRowIds = table
+            .getRowModel()
+            .rows.map((row) => row.getValue("id"));
+          console.log("all row ids", allRowIds);
+        }}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        onCheckedChange={(value) => {
+          console.log("row id value", row.getValue("id"));
+          console.log("row value", value);
+          row.toggleSelected(!!value);
+        }}
         aria-label="Select row"
       />
     ),

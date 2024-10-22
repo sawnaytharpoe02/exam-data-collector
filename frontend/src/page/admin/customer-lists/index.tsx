@@ -15,8 +15,8 @@ async function getData(): Promise<Customer[]> {
       exam_type: "GRE",
       section: null,
       status: "inProgress",
-      month: "2024-10",
-      date: "2024-10-01",
+      month: "Oct",
+      date: "34",
     },
     {
       id: "2",
@@ -27,8 +27,8 @@ async function getData(): Promise<Customer[]> {
       exam_type: "TOEFL",
       section: null,
       status: "inProgress",
-      month: "2024-09",
-      date: "2024-09-15",
+      month: "Sep",
+      date: "34",
     },
     {
       id: "3",
@@ -39,8 +39,8 @@ async function getData(): Promise<Customer[]> {
       exam_type: "SAT",
       section: null,
       status: "doubleChecked",
-      month: "2024-11",
-      date: "2024-11-08",
+      month: "Nov",
+      date: "38",
     },
     {
       id: "4",
@@ -51,8 +51,8 @@ async function getData(): Promise<Customer[]> {
       exam_type: "IELTS",
       section: "JP",
       status: "failed",
-      month: "2024-08",
-      date: "2024-08-22",
+      month: "Aug",
+      date: "42",
     },
     {
       id: "5",
@@ -63,8 +63,8 @@ async function getData(): Promise<Customer[]> {
       exam_type: "GMAT",
       section: null,
       status: "open",
-      month: "2024-07",
-      date: "2024-07-17",
+      month: "Jul",
+      date: "47",
     },
     {
       id: "6",
@@ -75,8 +75,8 @@ async function getData(): Promise<Customer[]> {
       exam_type: "ACT",
       section: "MM",
       status: "open",
-      month: "2024-06",
-      date: "2024-06-30",
+      month: "Jun",
+      date: "40",
     },
     {
       id: "7",
@@ -87,8 +87,8 @@ async function getData(): Promise<Customer[]> {
       exam_type: "MCAT",
       section: null,
       status: "inProgress",
-      month: "2024-12",
-      date: "2024-12-05",
+      month: "Dec",
+      date: "35",
     },
     {
       id: "8",
@@ -99,8 +99,8 @@ async function getData(): Promise<Customer[]> {
       exam_type: "LSAT",
       section: null,
       status: "failed",
-      month: "2024-05",
-      date: "2024-05-14",
+      month: "May",
+      date: "44",
     },
     {
       id: "9",
@@ -111,8 +111,8 @@ async function getData(): Promise<Customer[]> {
       exam_type: "OET",
       section: "JP",
       status: "doubleChecked",
-      month: "2024-04",
-      date: "2024-04-19",
+      month: "Apr",
+      date: "49",
     },
     {
       id: "10",
@@ -123,8 +123,8 @@ async function getData(): Promise<Customer[]> {
       exam_type: "PTE",
       section: null,
       status: "done",
-      month: "2024-03",
-      date: "2024-03-12",
+      month: "Mar",
+      date: "42",
     },
   ];
 }
@@ -142,7 +142,7 @@ const CustomerListsPage = () => {
   }, []);
 
   return (
-    <div className="p-1 lg:p-4">
+    <div className="p-1 lg:px-4">
       <CustomerDataTable columns={columns} data={data} />
     </div>
   );
