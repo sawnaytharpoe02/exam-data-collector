@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { useCreateCustomer } from "@/api/mutations";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -49,6 +50,7 @@ const FormPage = () => {
   });
 
   const _exam_type = form.watch("exam_type");
+  const createCustomerMutation = useCreateCustomer();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const payload = {
@@ -62,10 +64,11 @@ const FormPage = () => {
         : values.section,
       date: dayjs(values.date).date().toString(),
       month: values.month,
-      role: "user"
+      role: "user",
     };
 
     console.log("Submit value", payload);
+    createCustomerMutation.mutate(payload);
   };
 
   const examTypes: IExamType[] = [
@@ -318,7 +321,9 @@ const FormPage = () => {
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={createCustomerMutation.isPending}>
+            {createCustomerMutation.isPending ? "Submitting..." : "Submit"}
+          </Button>
         </form>
       </Form>
     </div>

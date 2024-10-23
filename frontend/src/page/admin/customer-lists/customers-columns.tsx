@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useCustomerStore } from "@/store/customerStore";
 import { Customer } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import clsx from "clsx";
@@ -53,34 +54,46 @@ export const columns: ColumnDef<Customer>[] = [
   {
     id: "id",
     accessorKey: "id",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => {
-          table.toggleAllPageRowsSelected(!!value);
+    header: ({ table }) => {
+      const { selectedCustomerIds, toggleAllCustomerSelection } =
+        useCustomerStore();
 
-          const allRowIds = table
-            .getRowModel()
-            .rows.map((row) => row.getValue("id"));
-          console.log("all row ids", allRowIds);
-        }}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => {
-          console.log("row id value", row.getValue("id"));
-          console.log("row value", value);
-          row.toggleSelected(!!value);
-        }}
-        aria-label="Select row"
-      />
-    ),
+      const allRowIds = table
+        .getRowModel()
+        .rows.map((row) => row.getValue("id"));
+      const isAllSelected = allRowIds.length === selectedCustomerIds.length;
+
+      return (
+        <Checkbox
+          checked={
+            isAllSelected ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => {
+            table.toggleAllPageRowsSelected(!!value);
+            toggleAllCustomerSelection(allRowIds as string[], !!value);
+          }}
+          aria-label="Select all"
+        />
+      );
+    },
+    cell: ({ row }) => {
+      const { selectedCustomerIds, toggleCustomerSelection } =
+        useCustomerStore();
+      const rowId: string = row.getValue("id");
+      const isSelected = selectedCustomerIds.includes(rowId);
+
+      return (
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={(value) => {
+            row.toggleSelected(!!value);
+            toggleCustomerSelection(row.getValue("id"), !!value);
+          }}
+          aria-label="Select row"
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },

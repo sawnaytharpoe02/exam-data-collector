@@ -1,5 +1,10 @@
 export type Section = "JP" | "MM";
-export type Status = "open" | "inProgress" | "done" | "doubleChecked" | "failed";
+export type Status =
+  | "open"
+  | "inProgress"
+  | "done"
+  | "doubleChecked"
+  | "failed";
 
 export interface IExamData {
   id: number;
@@ -30,3 +35,15 @@ export type Customer = {
   month: Date | string;
   date: Date | string;
 };
+
+export interface IReqCustomer {
+  prometric_id: string;
+  password: string;
+  name: string;
+  dob: string;
+  exam_type: string;
+  section: string | null;
+  date: string;
+  month: string;
+  role: string;
+}

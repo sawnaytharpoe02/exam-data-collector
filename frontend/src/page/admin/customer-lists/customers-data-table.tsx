@@ -26,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useCustomerStore } from "@/store/customerStore";
 import {
   MagnifyingGlassIcon,
   MixerHorizontalIcon,
@@ -45,6 +46,9 @@ export function CustomerDataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+
+  const { selectedCustomerIds } = useCustomerStore();
+  console.log("stored selected customer ids", selectedCustomerIds);
 
   const table = useReactTable({
     data,
@@ -105,7 +109,10 @@ export function CustomerDataTable<TData, TValue>({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button variant={"destructive"} disabled size={"sm"}>
+          <Button
+            variant={"destructive"}
+            disabled={selectedCustomerIds.length === 0}
+            size={"sm"}>
             <TrashIcon className="mr-2" /> Delete
           </Button>
 
