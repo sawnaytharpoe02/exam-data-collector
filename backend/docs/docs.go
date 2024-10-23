@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/products/get_all_products": {
-            "get": {
-                "description": "Get a list of products",
+        "/users/create_user": {
+            "post": {
+                "description": "Create a new user in the system",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,17 +25,25 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Products"
+                    "Users"
                 ],
-                "summary": "Get all products",
+                "summary": "Create a new user",
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RequestUser"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.User"
-                            }
+                            "$ref": "#/definitions/models.User"
                         }
                     }
                 }
@@ -66,16 +74,133 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/{id}/delete_user": {
+            "delete": {
+                "description": "Delete a user from the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/get_user": {
+            "get": {
+                "description": "Get user detail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "models.User": {
+        "models.RequestUser": {
             "type": "object",
+            "required": [
+                "email",
+                "jp_id",
+                "jp_password",
+                "name",
+                "password"
+            ],
             "properties": {
-                "id": {
-                    "type": "integer"
+                "email": {
+                    "type": "string"
+                },
+                "jp_id": {
+                    "type": "string"
+                },
+                "jp_password": {
+                    "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "required": [
+                "email",
+                "jp_id",
+                "jp_password",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "Tempory_Date time.Time          ` + "`" + `json:\"tempory_date,omitempty\" bson:\"tempory_date,omitempty\"` + "`" + `",
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "jp_id": {
+                    "type": "string"
+                },
+                "jp_password": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }

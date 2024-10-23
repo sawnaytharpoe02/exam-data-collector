@@ -2,12 +2,21 @@ package controllers
 
 import (
 	"backend/models"
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// GetUsers - Get all users
+type UserController struct {
+	Collection *mongo.Collection
+}
+
+// GetUsers - Get all users from MongoDB
 // @Summary Get all users
 // @Description Get a list of users
 // @Tags Users
@@ -15,10 +24,113 @@ import (
 // @Produce json
 // @Success 200 {array} models.User
 // @Router /users/get_all_users [get]
-func GetUsers(c *gin.Context) {
-	users := []models.User{
-		{ID: 1, Name: "John Naing"},
-		{ID: 2, Name: "Jane Smith"},
+func (uc *UserController) GetUsers(c *gin.Context) {
+	var users []models.User
+
+	cursor, err := uc.Collection.Find(context.TODO(), bson.D{})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching users"})
+		return
 	}
+
+	if err := cursor.All(context.TODO(), &users); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error decoding users"})
+		return
+	}
+
+	// Return the list of users as JSON
 	c.JSON(http.StatusOK, users)
+}
+
+// @Summary Create a new user
+// @Description Create a new user in the system
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body models.RequestUser true "User"
+// @Success 200 {object} models.User
+// @Router /users/create_user [post]
+func (uc *UserController) CreateUser(c *gin.Context) {
+	var user models.User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user.Id = primitive.NewObjectID()
+	user.CreateAt = time.Now()
+	user.UpdatedAt = time.Now()
+
+	_, err := uc.Collection.InsertOne(context.TODO(), user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+// GetUsers - Get user from MongoDB
+// @Summary Get user
+// @Description Get user detail
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} models.User
+// @Router /users/{id}/get_user [get]
+func (uc *UserController) GetUser(c *gin.Context) {
+	userID := c.Param("id")
+
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	// Find the user in the collection
+	var user models.User
+	err = uc.Collection.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching user"})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+// DeleteUser - Delete user by ID
+// @Summary Delete a user
+// @Description Delete a user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {string} string "User deleted successfully"
+// @Router /users/{id}/delete_user [delete]
+func (uc *UserController) DeleteUser(c *gin.Context) {
+	userID := c.Param("id")
+
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	result, err := uc.Collection.DeleteOne(context.TODO(), bson.M{"_id": objID})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error deleting user"})
+		return
+	}
+
+	if result.DeletedCount == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
