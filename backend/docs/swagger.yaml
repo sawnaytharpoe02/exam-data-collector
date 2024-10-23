@@ -1,31 +1,117 @@
 definitions:
-  models.User:
+  models.RequestUser:
     properties:
-      id:
-        type: integer
+      email:
+        type: string
+      jp_id:
+        type: string
+      jp_password:
+        type: string
       name:
         type: string
+      password:
+        type: string
+    required:
+    - email
+    - jp_id
+    - jp_password
+    - name
+    - password
+    type: object
+  models.User:
+    properties:
+      _id:
+        type: string
+      created_at:
+        description: Tempory_Date time.Time          `json:"tempory_date,omitempty"
+          bson:"tempory_date,omitempty"`
+        type: string
+      email:
+        type: string
+      jp_id:
+        type: string
+      jp_password:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - email
+    - jp_id
+    - jp_password
+    - name
+    - password
     type: object
 info:
   contact: {}
 paths:
-  /products/get_all_products:
+  /users/{id}/delete_user:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user from the system
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            type: string
+      summary: Delete a user
+      tags:
+      - Users
+  /users/{id}/get_user:
     get:
       consumes:
       - application/json
-      description: Get a list of products
+      description: Get user detail
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.User'
-            type: array
-      summary: Get all products
+            $ref: '#/definitions/models.User'
+      summary: Get user
       tags:
-      - Products
+      - Users
+  /users/create_user:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user in the system
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.RequestUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Create a new user
+      tags:
+      - Users
   /users/get_all_users:
     get:
       consumes:
