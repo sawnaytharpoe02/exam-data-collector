@@ -23,7 +23,7 @@ type UserController struct {
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.User
-// @Router /users/get_all_users [get]
+// @Router /api/customers/get_all_customers [get]
 func (uc *UserController) GetUsers(c *gin.Context) {
 	var users []models.User
 
@@ -49,7 +49,7 @@ func (uc *UserController) GetUsers(c *gin.Context) {
 // @Produce json
 // @Param user body models.RequestUser true "User"
 // @Success 200 {object} models.User
-// @Router /users/create_user [post]
+// @Router /api/customers/create_customer [post]
 func (uc *UserController) CreateUser(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -78,7 +78,7 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 // @Produce json
 // @Param id path string true "User ID"
 // @Success 200 {object} models.User
-// @Router /users/{id}/get_user [get]
+// @Router /api/customers/{id}/get_customer [get]
 func (uc *UserController) GetUser(c *gin.Context) {
 	userID := c.Param("id")
 
@@ -111,7 +111,7 @@ func (uc *UserController) GetUser(c *gin.Context) {
 // @Produce json
 // @Param id path string true "User ID"
 // @Success 200 {string} string "User deleted successfully"
-// @Router /users/{id}/delete_user [delete]
+// @Router /api/customers/{id}/delete_customer [delete]
 func (uc *UserController) DeleteUser(c *gin.Context) {
 	userID := c.Param("id")
 

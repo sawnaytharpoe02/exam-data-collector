@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/users/create_user": {
+        "/api/customers/create_customer": {
             "post": {
                 "description": "Create a new user in the system",
                 "consumes": [
@@ -49,7 +49,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/get_all_users": {
+        "/api/customers/get_all_customers": {
             "get": {
                 "description": "Get a list of users",
                 "consumes": [
@@ -75,9 +75,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{id}/delete_user": {
+        "/api/customers/{id}/delete_customer": {
             "delete": {
-                "description": "Delete a user from the system",
+                "description": "Delete a user",
                 "consumes": [
                     "application/json"
                 ],
@@ -107,7 +107,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{id}/get_user": {
+        "/api/customers/{id}/get_customer": {
             "get": {
                 "description": "Get user detail",
                 "consumes": [

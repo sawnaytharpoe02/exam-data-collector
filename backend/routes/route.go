@@ -10,13 +10,13 @@ import (
 // SetupRoutes function to define API routes
 func SetupRoutes(r *gin.Engine) {
 	userController := controllers.UserController{
-		Collection: configs.GetCollection(configs.DB, "users"),
+		Collection: configs.GetCollection(configs.DB, "customers"),
 	}
-	user := r.Group("/users")
+	user := r.Group("/api/customers")
 	{
-		user.GET("/get_all_users", userController.GetUsers)
-		user.POST("/create_user", userController.CreateUser)
-		user.GET("/:id/get_user", userController.GetUser)
-		user.DELETE("/:id/delete_user", userController.DeleteUser)
+		user.GET("/get_all_customers", userController.GetUsers)
+		user.POST("/create_customer", userController.CreateUser)
+		user.GET("/:id/get_customer", userController.GetUser)
+		user.DELETE("/:id/delete_customer", userController.DeleteUser)
 	}
 }

@@ -48,11 +48,11 @@ definitions:
 info:
   contact: {}
 paths:
-  /users/{id}/delete_user:
+  /api/customers/{id}/delete_customer:
     delete:
       consumes:
       - application/json
-      description: Delete a user from the system
+      description: Delete a user
       parameters:
       - description: User ID
         in: path
@@ -69,7 +69,7 @@ paths:
       summary: Delete a user
       tags:
       - Users
-  /users/{id}/get_user:
+  /api/customers/{id}/get_customer:
     get:
       consumes:
       - application/json
@@ -90,7 +90,7 @@ paths:
       summary: Get user
       tags:
       - Users
-  /users/create_user:
+  /api/customers/create_customer:
     post:
       consumes:
       - application/json
@@ -112,7 +112,7 @@ paths:
       summary: Create a new user
       tags:
       - Users
-  /users/get_all_users:
+  /api/customers/get_all_customers:
     get:
       consumes:
       - application/json
