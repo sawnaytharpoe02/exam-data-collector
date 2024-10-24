@@ -2,8 +2,10 @@ import { useState } from "react";
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -11,13 +13,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -27,12 +22,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useCustomerStore } from "@/store/customerStore";
-import {
-  MagnifyingGlassIcon,
-  MixerHorizontalIcon,
-  PinBottomIcon,
-  TrashIcon,
-} from "@radix-ui/react-icons";
+import { PinBottomIcon, TrashIcon } from "@radix-ui/react-icons";
+import CustomersTableToolbar from "./customers-table-toolbar";
+import { CustomersTableViewOptions } from "./customers-table-view-options";
 
 interface CustomerDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,6 +38,7 @@ export function CustomerDataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const { selectedCustomerIds } = useCustomerStore();
   console.log("stored selected customer ids", selectedCustomerIds);
@@ -58,10 +51,13 @@ export function CustomerDataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     state: {
       sorting,
       columnVisibility,
       rowSelection,
+      columnFilters,
     },
   });
 
@@ -69,46 +65,12 @@ export function CustomerDataTable<TData, TValue>({
     <>
       {/* Data Table Navigation Filtering and Searching */}
       <div className="flex lg:items-center flex-col lg:flex-row justify-between mb-4 gap-2">
-        <div>
-          <div className="flex w-full max-w-sm items-center space-x-2">
-            <Input
-              type="email"
-              placeholder="Customer name"
-              className="text-sm h-8"
-            />
-            <Button type="submit" size={"sm"}>
-              <MagnifyingGlassIcon className="mr-2" /> Search
-            </Button>
-          </div>
-        </div>
+        <CustomersTableToolbar table={table} />
+        <div className="space-x-2 flex items-center">
+          {/* Toggle table col view */}
+          <CustomersTableViewOptions table={table} />
 
-        <div className="space-x-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size={"sm"}>
-                <MixerHorizontalIcon className="mr-2" /> View
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }>
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
+          {/* Delete customers row */}
           <Button
             variant={"destructive"}
             disabled={selectedCustomerIds.length === 0}
@@ -116,6 +78,7 @@ export function CustomerDataTable<TData, TValue>({
             <TrashIcon className="mr-2" /> Delete
           </Button>
 
+          {/* Export csv file for customers data  */}
           <Button variant={"outline"} size={"sm"}>
             <PinBottomIcon className="mr-2" /> Export
           </Button>

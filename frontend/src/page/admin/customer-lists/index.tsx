@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { columns } from "./customers-columns";
 import { CustomerDataTable } from "./customers-data-table";
 
-async function getData(): Promise<Customer[]> {
+async function getCustomersData(): Promise<Customer[]> {
   // Fetch data from your API here.
   return [
     {
@@ -134,7 +134,7 @@ const CustomerListsPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getData();
+      const data = await getCustomersData();
       setData(data);
     };
 

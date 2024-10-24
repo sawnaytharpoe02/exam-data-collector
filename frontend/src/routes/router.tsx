@@ -3,6 +3,7 @@ import GenerateFormPage from "@/page/admin/generate-form";
 import DashboardLayout from "@/page/admin/layout/layout";
 import AuthPage from "@/page/auth";
 import FormPage from "@/page/client/form";
+import NotFound from "@/page/not-found";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
         element: <GenerateFormPage />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 
