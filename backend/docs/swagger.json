@@ -127,9 +127,84 @@
                     }
                 }
             }
+        },
+        "/api/exams/create_exams": {
+            "post": {
+                "description": "Create exams",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exams"
+                ],
+                "summary": "Create exams",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Exam"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/exams/get_all_exams": {
+            "get": {
+                "description": "Get a list of exams",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exams"
+                ],
+                "summary": "Get all exams",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Exam"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "models.Exam": {
+            "type": "object",
+            "required": [
+                "exam_type"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "exam_type": {
+                    "type": "string"
+                },
+                "section": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "models.RequestUser": {
             "type": "object",
             "required": [

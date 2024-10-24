@@ -1,4 +1,19 @@
 definitions:
+  models.Exam:
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+      exam_type:
+        type: string
+      section:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - exam_type
+    type: object
   models.RequestUser:
     properties:
       email:
@@ -129,4 +144,38 @@ paths:
       summary: Get all users
       tags:
       - Users
+  /api/exams/create_exams:
+    post:
+      consumes:
+      - application/json
+      description: Create exams
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Exam'
+            type: array
+      summary: Create exams
+      tags:
+      - Exams
+  /api/exams/get_all_exams:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of exams
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Exam'
+            type: array
+      summary: Get all exams
+      tags:
+      - Exams
 swagger: "2.0"

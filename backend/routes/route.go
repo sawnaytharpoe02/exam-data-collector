@@ -19,4 +19,13 @@ func SetupRoutes(r *gin.Engine) {
 		user.GET("/:id/get_customer", userController.GetUser)
 		user.DELETE("/:id/delete_customer", userController.DeleteUser)
 	}
+
+	examController := controllers.ExamController{
+		Collection: configs.GetCollection(configs.DB, "exams"),
+	}
+	exam := r.Group("/api/exams")
+	{
+		exam.GET("/get_all_exams", examController.GetAllExams)
+		exam.POST("/create_exams", examController.CreateExams)
+	}
 }
