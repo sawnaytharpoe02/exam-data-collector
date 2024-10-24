@@ -28,7 +28,7 @@ const statusBadgeMapping = {
     icon: Circle,
     classNames: "bg-blue-100 text-blue-800 hover:bg-blue-200",
   },
-  inProgress: {
+  "in progress": {
     text: "Progress",
     icon: Clock,
     classNames: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
@@ -38,7 +38,7 @@ const statusBadgeMapping = {
     icon: CheckCircle,
     classNames: "bg-green-100 text-green-800 hover:bg-green-200",
   },
-  doubleChecked: {
+  "double checked": {
     text: "Checked",
     icon: CheckCircle2,
     classNames: "bg-purple-100 text-purple-800 hover:bg-purple-200",
@@ -142,14 +142,16 @@ export const columns: ColumnDef<Customer>[] = [
       row.getValue("section") === null ? "N/A" : row.getValue("section"),
   },
   {
+    id: "status",
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("status") || null;
       const badgeInfo =
-        statusBadgeMapping[status as keyof typeof statusBadgeMapping] || null;
+        statusBadgeMapping[status as keyof typeof statusBadgeMapping] ||
+        null;
 
-      if (!badgeInfo) {
+      if (!status) {
         return null;
       }
 
@@ -167,6 +169,9 @@ export const columns: ColumnDef<Customer>[] = [
         </Badge>
       );
     },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    }
   },
   {
     accessorKey: "month",

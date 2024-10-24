@@ -1,9 +1,9 @@
 export type Section = "JP" | "MM";
 export type Status =
   | "open"
-  | "inProgress"
+  | "in progress"
   | "done"
-  | "doubleChecked"
+  | "double checked"
   | "failed";
 
 export interface IExamData {

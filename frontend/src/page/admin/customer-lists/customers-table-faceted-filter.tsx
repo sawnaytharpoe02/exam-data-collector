@@ -37,6 +37,8 @@ export function CustomersTableFacetedFilter<TData, TValue>({
   const facets = column?.getFacetedUniqueValues();
   const selectedValues = new Set(column?.getFilterValue() as string[]);
 
+  console.log("br nyr", selectedValues);
+
   return (
     <Popover>
       <PopoverTrigger asChild>

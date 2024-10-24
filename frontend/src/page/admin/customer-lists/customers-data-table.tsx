@@ -5,6 +5,7 @@ import {
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFacetedRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   SortingState,
@@ -46,6 +47,7 @@ export function CustomerDataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -53,6 +55,7 @@ export function CustomerDataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnFiltersChange: setColumnFilters,
+    getFacetedRowModel: getFacetedRowModel(),
     state: {
       sorting,
       columnVisibility,

@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
+import { statuses } from "@/constants/data";
 import { Table } from "@tanstack/react-table";
 import { CustomersTableFacetedFilter } from "./customers-table-faceted-filter";
-import { statuses } from "@/constants/data";
 
 interface CustomersTableToolbarProps<TData> {
   table: Table<TData>;
@@ -29,9 +29,8 @@ export function CustomersTableToolbar<TData>({
           />
         )}
       </div>
-      {/* <DataTableViewOptions table={table} /> */}
     </div>
   );
-};
+}
 
 export default CustomersTableToolbar;
