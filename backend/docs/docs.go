@@ -15,6 +15,132 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/admins/create_admin": {
+            "post": {
+                "description": "Create a new admin in the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "Create a new admin",
+                "parameters": [
+                    {
+                        "description": "Admin",
+                        "name": "admin",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RequestAdmin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Admin"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/admins/forgot_password": {
+            "post": {
+                "description": "Send mail to forgot password mail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "AdminForgotPassword - Admin forgot password",
+                "parameters": [
+                    {
+                        "description": "Admin",
+                        "name": "admin",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ForgotPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email sent successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/admins/get_all_admins": {
+            "get": {
+                "description": "Get a list of admins",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "Get all admins",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Admin"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/admins/{id}/get_admin": {
+            "get": {
+                "description": "Get admin detail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "Get admin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Admin ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Admin"
+                        }
+                    }
+                }
+            }
+        },
         "/api/customers/create_customer": {
             "post": {
                 "description": "Create a new user in the system",
@@ -193,6 +319,34 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.Admin": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "user_name"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Exam": {
             "type": "object",
             "required": [
@@ -216,29 +370,62 @@ const docTemplate = `{
                 }
             }
         },
-        "models.RequestUser": {
+        "models.ForgotPasswordRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RequestAdmin": {
             "type": "object",
             "required": [
                 "email",
-                "jp_id",
-                "jp_password",
-                "name",
-                "password"
+                "password",
+                "user_name"
             ],
             "properties": {
                 "email": {
                     "type": "string"
                 },
-                "jp_id": {
+                "password": {
                     "type": "string"
                 },
-                "jp_password": {
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RequestUser": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "prometric_id",
+                "prometric_password",
+                "status"
+            ],
+            "properties": {
+                "email": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "password": {
+                "prometric_id": {
+                    "type": "string"
+                },
+                "prometric_password": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tempoary_data": {
                     "type": "string"
                 }
             }
@@ -247,32 +434,34 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "email",
-                "jp_id",
-                "jp_password",
                 "name",
-                "password"
+                "prometric_id",
+                "prometric_password",
+                "status"
             ],
             "properties": {
                 "_id": {
                     "type": "string"
                 },
                 "created_at": {
-                    "description": "Tempory_Date time.Time          ` + "`" + `json:\"tempory_date,omitempty\" bson:\"tempory_date,omitempty\"` + "`" + `",
                     "type": "string"
                 },
                 "email": {
                     "type": "string"
                 },
-                "jp_id": {
-                    "type": "string"
-                },
-                "jp_password": {
-                    "type": "string"
-                },
                 "name": {
                     "type": "string"
                 },
-                "password": {
+                "prometric_id": {
+                    "type": "string"
+                },
+                "prometric_password": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tempoary_data": {
                     "type": "string"
                 },
                 "updated_at": {

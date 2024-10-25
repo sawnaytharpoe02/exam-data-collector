@@ -1,4 +1,23 @@
 definitions:
+  models.Admin:
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+      user_name:
+        type: string
+    required:
+    - email
+    - password
+    - user_name
+    type: object
   models.Exam:
     properties:
       _id:
@@ -14,55 +33,159 @@ definitions:
     required:
     - exam_type
     type: object
+  models.ForgotPasswordRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  models.RequestAdmin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      user_name:
+        type: string
+    required:
+    - email
+    - password
+    - user_name
+    type: object
   models.RequestUser:
     properties:
       email:
         type: string
-      jp_id:
-        type: string
-      jp_password:
-        type: string
       name:
         type: string
-      password:
+      prometric_id:
+        type: string
+      prometric_password:
+        type: string
+      status:
+        type: string
+      tempoary_data:
         type: string
     required:
     - email
-    - jp_id
-    - jp_password
     - name
-    - password
+    - prometric_id
+    - prometric_password
+    - status
     type: object
   models.User:
     properties:
       _id:
         type: string
       created_at:
-        description: Tempory_Date time.Time          `json:"tempory_date,omitempty"
-          bson:"tempory_date,omitempty"`
         type: string
       email:
         type: string
-      jp_id:
-        type: string
-      jp_password:
-        type: string
       name:
         type: string
-      password:
+      prometric_id:
+        type: string
+      prometric_password:
+        type: string
+      status:
+        type: string
+      tempoary_data:
         type: string
       updated_at:
         type: string
     required:
     - email
-    - jp_id
-    - jp_password
     - name
-    - password
+    - prometric_id
+    - prometric_password
+    - status
     type: object
 info:
   contact: {}
 paths:
+  /api/admins/{id}/get_admin:
+    get:
+      consumes:
+      - application/json
+      description: Get admin detail
+      parameters:
+      - description: Admin ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Admin'
+      summary: Get admin
+      tags:
+      - Admins
+  /api/admins/create_admin:
+    post:
+      consumes:
+      - application/json
+      description: Create a new admin in the system
+      parameters:
+      - description: Admin
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.RequestAdmin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Admin'
+      summary: Create a new admin
+      tags:
+      - Admins
+  /api/admins/forgot_password:
+    post:
+      consumes:
+      - application/json
+      description: Send mail to forgot password mail
+      parameters:
+      - description: Admin
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email sent successfully
+          schema:
+            type: string
+      summary: AdminForgotPassword - Admin forgot password
+      tags:
+      - Admins
+  /api/admins/get_all_admins:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of admins
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Admin'
+            type: array
+      summary: Get all admins
+      tags:
+      - Admins
   /api/customers/{id}/delete_customer:
     delete:
       consumes:

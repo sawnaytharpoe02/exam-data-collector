@@ -28,4 +28,16 @@ func SetupRoutes(r *gin.Engine) {
 		exam.GET("/get_all_exams", examController.GetAllExams)
 		exam.POST("/create_exams", examController.CreateExams)
 	}
+
+	// Admin routes
+	adminController := controllers.AdminController{
+		Collection: configs.GetCollection(configs.DB, "admins"),
+	}
+	admin := r.Group("/api/admins")
+	{
+		admin.GET("/get_all_admins", adminController.GetAllAdmins)
+		admin.POST("/create_admin", adminController.CreateAdmin)
+		admin.GET("/:id/get_admin", adminController.GetAdmin)
+		admin.POST("/forgot_password", adminController.AdminForgotPassword)
+	}
 }
