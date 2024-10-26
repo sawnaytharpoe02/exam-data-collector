@@ -1,142 +1,38 @@
 import { TCustomer } from "@/types";
+import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
 import { columns } from "./customers-columns";
 import { CustomerDataTable } from "./customers-data-table";
 
 async function getCustomersData(): Promise<TCustomer[]> {
   // Fetch data from your API here.
-  return [
-    {
-      _id: "1",
-      name: "johndoe",
-      dob: "1990-04-23",
-      prometric_id: "JP123456",
-      prometric_password: "prometric_password123",
-      email: "james@gmail.com",
-      exam_type: "GRE",
+  const users = [];
+  const count = 100;
+
+  for (let i = 1; i <= count; i++) {
+    const user = {
+      _id: i.toString(),
+      name: faker.person.firstName().toLowerCase(),
+      dob: faker.date.birthdate().toISOString().split("T")[0], // formatted as YYYY-MM-DD
+      prometric_id: `JP${faker.number.int({ min: 100000, max: 999999 })}`,
+      prometric_password: faker.number.int({ min: 100000, max: 999999 }).toString(),
+      email: faker.internet.email(),
+      exam_type: faker.helpers.arrayElement(["FOOD", "KAIGO", "JFT"]),
       section: null,
-      status: "in progress",
-      month: "Oct",
-      date: "34",
-    },
-    {
-      _id: "2",
-      name: "janedoe",
-      dob: "1992-11-15",
-      prometric_id: "JP123456",
-      prometric_password: "janedoe2023",
-      email: "james@gmail.com",
-      exam_type: "TOEFL",
-      section: null,
-      status: "in progress",
-      month: "Sep",
-      date: "34",
-    },
-    {
-      _id: "3",
-      name: "michaelsmith",
-      dob: "1988-05-10",
-      prometric_id: "JP123456",
-      prometric_password: "mikeSecure!88",
-      email: "james@gmail.com",
-      exam_type: "SAT",
-      section: null,
-      status: "double checked",
-      month: "Nov",
-      date: "38",
-    },
-    {
-      _id: "4",
-      name: "annawatson",
-      dob: "1995-12-05",
-      prometric_id: "JP123456",
-      prometric_password: "annaprometric_password1",
-      email: "james@gmail.com",
-      exam_type: "IELTS",
-      section: "JP",
-      status: "failed",
-      month: "Aug",
-      date: "42",
-    },
-    {
-      _id: "5",
-      name: "petergreen",
-      dob: "1980-02-20",
-      prometric_id: "JP123456",
-      prometric_password: "peterRockstar80",
-      email: "james@gmail.com",
-      exam_type: "GMAT",
-      section: null,
-      status: "open",
-      month: "Jul",
-      date: "47",
-    },
-    {
-      _id: "6",
-      name: "emilybrown",
-      dob: "1998-06-12",
-      prometric_id: "JP65432",
-      prometric_password: "emilySecure@99",
-      email: "james@gmail.com",
-      exam_type: "ACT",
-      section: "MM",
-      status: "open",
-      month: "Jun",
-      date: "40",
-    },
-    {
-      _id: "7",
-      name: "chrisjohnson",
-      dob: "1985-10-18",
-      prometric_id: "JP65432",
-      prometric_password: "chrisPass#123",
-      email: "james@gmail.com",
-      exam_type: "MCAT",
-      section: null,
-      status: "in progress",
-      month: "Dec",
-      date: "35",
-    },
-    {
-      _id: "8",
-      name: "samanthalee",
-      dob: "1993-09-07",
-      prometric_id: "JP65432",
-      prometric_password: "samleePass123",
-      email: "james@gmail.com",
-      exam_type: "LSAT",
-      section: null,
-      status: "failed",
-      month: "May",
-      date: "44",
-    },
-    {
-      _id: "9",
-      name: "tomwilliams",
-      dob: "1997-03-28",
-      prometric_id: "JP65432",
-      prometric_password: "tomWilliams98",
-      email: "james@gmail.com",
-      exam_type: "OET",
-      section: "JP",
-      status: "double checked",
-      month: "Apr",
-      date: "49",
-    },
-    {
-      _id: "10",
-      name: "aliceroberts",
-      dob: "1991-08-01",
-      prometric_id: "JP65432",
-      prometric_password: "aliceSecure$1",
-      email: "james@gmail.com",
-      exam_type: "PTE",
-      section: null,
-      status: "done",
-      month: "Mar",
-      date: "42",
-    },
-  ];
+      status: faker.helpers.arrayElement([
+        "in progress",
+        "done",
+        "failed",
+        "double checked",
+        "open",
+      ]),
+      month: faker.date.month({ abbreviated: true }).toString(),
+      date: faker.number.int({ min: 1, max: 31 }).toString(),
+    };
+    users.push(user);
+  }
+
+  return users;
 }
 
 const CustomerListsPage = () => {
