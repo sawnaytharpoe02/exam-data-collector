@@ -1,14 +1,15 @@
-import { Customer, IReqCustomer } from "@/types";
+import { IReqCustomer } from "@/types";
 import axiosInstance from "./axios";
 
-export const getCustomers = async () => {
-  return (await axiosInstance.get<Customer[]>(`/customers/get_all_customers`))
-    .data;
-};
+// export const getCustomers = async () => {
+//   return (await axiosInstance.get<Customer[]>(`/customers/get_all_customers`))
+//     .data;
+// };
 
-export const getCustomer = async (id: string) => {
-  return (await axiosInstance.get<Customer>(`/customers/${id}/get_customer`)).data;
-};
+// export const getCustomer = async (id: string) => {
+//   return (await axiosInstance.get<Customer>(`/customers/${id}/get_customer`))
+//     .data;
+// };
 
 export const createCustomer = async (data: IReqCustomer) => {
   await axiosInstance.post("/customers/create_customer", data);

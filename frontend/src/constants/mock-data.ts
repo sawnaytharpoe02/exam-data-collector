@@ -111,3 +111,9 @@ export const examLists: IExamData[] = [
   //   section: null,
   // },
 ];
+
+
+
+export const customerLists = [
+  
+]

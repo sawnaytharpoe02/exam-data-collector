@@ -10,12 +10,13 @@ export const formSchema = z.object({
     .min(2, {
       message: "Prometric id must be at least 2 characters.",
     }),
-  password: z.string().nonempty({ message: "Password is required." }).min(2, {
+  prometric_password: z.string().nonempty({ message: "Password is required." }).min(2, {
     message: "Password must be at least 2 characters.",
   }),
   name: z.string().nonempty({ message: "Name is required." }).min(2, {
     message: "Name must be at least 2 characters.",
   }),
+  email: z.string().email({ message: "Please enter a valid email address." }),
   dob: z.date().refine(
     (dob) => {
       const dobDate = new Date(dob);
