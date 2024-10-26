@@ -6,6 +6,7 @@ import { useLogin } from "@/hooks/useLogin";
 import { LoaderCircle, UserCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ServiceCollectRobot from "./service-collect-robot";
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ const AuthPage = () => {
           <Button
             className="w-full"
             onClick={handleAdminLogin}
-            disabled={isAdminPending || (!email || !password)}>
+            disabled={isAdminPending || !email || !password}>
             {isAdminPending ? (
               <>
                 <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />{" "}
@@ -122,11 +123,7 @@ const AuthPage = () => {
           </Button>
         </CardFooter>
       </Card>
-      <img
-        src="/data_collector_guy.png"
-        alt="Data Collector Guy"
-        className="absolute bottom-3 right-4 h-48 w-48 animate-bounce hidden md:block cursor-pointer"
-      />
+      <ServiceCollectRobot />
     </div>
   );
 };

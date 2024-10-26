@@ -1,17 +1,18 @@
-import { Customer } from "@/types";
+import { TCustomer } from "@/types";
 import { useEffect, useState } from "react";
 import { columns } from "./customers-columns";
 import { CustomerDataTable } from "./customers-data-table";
 
-async function getCustomersData(): Promise<Customer[]> {
+async function getCustomersData(): Promise<TCustomer[]> {
   // Fetch data from your API here.
   return [
     {
-      id: "1",
+      _id: "1",
       name: "johndoe",
       dob: "1990-04-23",
       prometric_id: "JP123456",
-      password: "password123",
+      prometric_password: "prometric_password123",
+      email: "james@gmail.com",
       exam_type: "GRE",
       section: null,
       status: "in progress",
@@ -19,11 +20,12 @@ async function getCustomersData(): Promise<Customer[]> {
       date: "34",
     },
     {
-      id: "2",
+      _id: "2",
       name: "janedoe",
       dob: "1992-11-15",
       prometric_id: "JP123456",
-      password: "janedoe2023",
+      prometric_password: "janedoe2023",
+      email: "james@gmail.com",
       exam_type: "TOEFL",
       section: null,
       status: "in progress",
@@ -31,11 +33,12 @@ async function getCustomersData(): Promise<Customer[]> {
       date: "34",
     },
     {
-      id: "3",
+      _id: "3",
       name: "michaelsmith",
       dob: "1988-05-10",
       prometric_id: "JP123456",
-      password: "mikeSecure!88",
+      prometric_password: "mikeSecure!88",
+      email: "james@gmail.com",
       exam_type: "SAT",
       section: null,
       status: "double checked",
@@ -43,11 +46,12 @@ async function getCustomersData(): Promise<Customer[]> {
       date: "38",
     },
     {
-      id: "4",
+      _id: "4",
       name: "annawatson",
       dob: "1995-12-05",
       prometric_id: "JP123456",
-      password: "annaPassword1",
+      prometric_password: "annaprometric_password1",
+      email: "james@gmail.com",
       exam_type: "IELTS",
       section: "JP",
       status: "failed",
@@ -55,11 +59,12 @@ async function getCustomersData(): Promise<Customer[]> {
       date: "42",
     },
     {
-      id: "5",
+      _id: "5",
       name: "petergreen",
       dob: "1980-02-20",
       prometric_id: "JP123456",
-      password: "peterRockstar80",
+      prometric_password: "peterRockstar80",
+      email: "james@gmail.com",
       exam_type: "GMAT",
       section: null,
       status: "open",
@@ -67,11 +72,12 @@ async function getCustomersData(): Promise<Customer[]> {
       date: "47",
     },
     {
-      id: "6",
+      _id: "6",
       name: "emilybrown",
       dob: "1998-06-12",
       prometric_id: "JP65432",
-      password: "emilySecure@99",
+      prometric_password: "emilySecure@99",
+      email: "james@gmail.com",
       exam_type: "ACT",
       section: "MM",
       status: "open",
@@ -79,11 +85,12 @@ async function getCustomersData(): Promise<Customer[]> {
       date: "40",
     },
     {
-      id: "7",
+      _id: "7",
       name: "chrisjohnson",
       dob: "1985-10-18",
       prometric_id: "JP65432",
-      password: "chrisPass#123",
+      prometric_password: "chrisPass#123",
+      email: "james@gmail.com",
       exam_type: "MCAT",
       section: null,
       status: "in progress",
@@ -91,11 +98,12 @@ async function getCustomersData(): Promise<Customer[]> {
       date: "35",
     },
     {
-      id: "8",
+      _id: "8",
       name: "samanthalee",
       dob: "1993-09-07",
       prometric_id: "JP65432",
-      password: "samleePass123",
+      prometric_password: "samleePass123",
+      email: "james@gmail.com",
       exam_type: "LSAT",
       section: null,
       status: "failed",
@@ -103,11 +111,12 @@ async function getCustomersData(): Promise<Customer[]> {
       date: "44",
     },
     {
-      id: "9",
+      _id: "9",
       name: "tomwilliams",
       dob: "1997-03-28",
       prometric_id: "JP65432",
-      password: "tomWilliams98",
+      prometric_password: "tomWilliams98",
+      email: "james@gmail.com",
       exam_type: "OET",
       section: "JP",
       status: "double checked",
@@ -115,11 +124,12 @@ async function getCustomersData(): Promise<Customer[]> {
       date: "49",
     },
     {
-      id: "10",
+      _id: "10",
       name: "aliceroberts",
       dob: "1991-08-01",
       prometric_id: "JP65432",
-      password: "aliceSecure$1",
+      prometric_password: "aliceSecure$1",
+      email: "james@gmail.com",
       exam_type: "PTE",
       section: null,
       status: "done",
@@ -130,7 +140,7 @@ async function getCustomersData(): Promise<Customer[]> {
 }
 
 const CustomerListsPage = () => {
-  const [data, setData] = useState<Customer[]>([]);
+  const [data, setData] = useState<TCustomer[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useCustomerStore } from "@/store/customerStore";
-import { Customer } from "@/types";
+import { TCustomer } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import clsx from "clsx";
 import {
@@ -50,17 +50,16 @@ const statusBadgeMapping = {
   },
 };
 
-export const columns: ColumnDef<Customer>[] = [
+export const columns: ColumnDef<TCustomer>[] = [
   {
-    id: "id",
-    accessorKey: "id",
+    accessorKey: "_id",
     header: ({ table }) => {
       const { selectedCustomerIds, toggleAllCustomerSelection } =
         useCustomerStore();
 
       const allRowIds = table
         .getRowModel()
-        .rows.map((row) => row.getValue("id"));
+        .rows.map((row) => row.getValue("_id"));
       const isAllSelected = allRowIds.length === selectedCustomerIds.length;
 
       return (
@@ -80,7 +79,7 @@ export const columns: ColumnDef<Customer>[] = [
     cell: ({ row }) => {
       const { selectedCustomerIds, toggleCustomerSelection } =
         useCustomerStore();
-      const rowId: string = row.getValue("id");
+      const rowId: string = row.getValue("_id");
       const isSelected = selectedCustomerIds.includes(rowId);
 
       return (
@@ -88,7 +87,7 @@ export const columns: ColumnDef<Customer>[] = [
           checked={isSelected}
           onCheckedChange={(value) => {
             row.toggleSelected(!!value);
-            toggleCustomerSelection(row.getValue("id"), !!value);
+            toggleCustomerSelection(rowId, !!value);
           }}
           aria-label="Select row"
         />
@@ -111,6 +110,19 @@ export const columns: ColumnDef<Customer>[] = [
     },
   },
   {
+    accessorKey: "prometric_id",
+    header: "Prometric Id",
+  },
+  {
+    accessorKey: "prometric_password",
+    header: "Prometric Password",
+  },
+
+  {
+    accessorKey: "email",
+    header: "Email",
+  },
+  {
     accessorKey: "dob",
     header: ({ column }) => {
       return (
@@ -123,14 +135,7 @@ export const columns: ColumnDef<Customer>[] = [
       );
     },
   },
-  {
-    accessorKey: "prometric_id",
-    header: "Prometric Id",
-  },
-  {
-    accessorKey: "password",
-    header: "Password",
-  },
+
   {
     accessorKey: "exam_type",
     header: "Exam Type",
@@ -148,8 +153,7 @@ export const columns: ColumnDef<Customer>[] = [
     cell: ({ row }) => {
       const status = row.getValue("status") || null;
       const badgeInfo =
-        statusBadgeMapping[status as keyof typeof statusBadgeMapping] ||
-        null;
+        statusBadgeMapping[status as keyof typeof statusBadgeMapping] || null;
 
       if (!status) {
         return null;
@@ -170,8 +174,8 @@ export const columns: ColumnDef<Customer>[] = [
       );
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    }
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "month",

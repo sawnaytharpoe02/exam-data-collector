@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useCreateCustomer } from "@/services/mutations";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -30,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formSchema } from "@/schemas";
+import { useCreateCustomer } from "@/services/mutations";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import dayjs from "dayjs";
@@ -39,8 +39,9 @@ const FormPage = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       prometric_id: "",
-      password: "",
+      prometric_password: "",
       name: "",
+      email: "",
       dob: undefined,
       exam_type: "",
       section: null,
@@ -50,13 +51,15 @@ const FormPage = () => {
   });
 
   const _exam_type = form.watch("exam_type");
-  const createCustomerMutation = useCreateCustomer();
+  // const createCustomerMutation = useCreateCustomer();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log("hi");
     const payload = {
       prometric_id: values.prometric_id,
-      password: values.password,
+      prometric_password: values.prometric_password,
       name: values.name,
+      email: values.email,
       dob: dayjs(values.dob).format("YYYY-MM-DD"),
       exam_type: values.exam_type,
       section: !_exam_type.includes("Kaigo / Nursing")
@@ -64,11 +67,10 @@ const FormPage = () => {
         : values.section,
       date: dayjs(values.date).date().toString(),
       month: values.month,
-      role: "user",
     };
 
     console.log("Submit value", payload);
-    createCustomerMutation.mutate(payload);
+    // createCustomerMutation.mutate(payload);
   };
 
   const examTypes: IExamType[] = [
@@ -117,10 +119,10 @@ const FormPage = () => {
           {/* Password */}
           <FormField
             control={form.control}
-            name="password"
+            name="prometric_password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Prometric Password</FormLabel>
                 <FormControl>
                   <Input placeholder="123456" {...field} />
                 </FormControl>
@@ -138,6 +140,21 @@ const FormPage = () => {
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input placeholder="James" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Examer Email */}
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="james@gmail.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -321,8 +338,9 @@ const FormPage = () => {
             )}
           />
 
-          <Button type="submit" disabled={createCustomerMutation.isPending}>
-            {createCustomerMutation.isPending ? "Submitting..." : "Submit"}
+          <Button type="submit">
+            {/* {createCustomerMutation.isPending ? "Submitting..." : "Submit"} */}
+            submit
           </Button>
         </form>
       </Form>
