@@ -1,16 +1,16 @@
-import { AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { AlertCircle } from "lucide-react";
 
 interface ErrorFallbackProps {
   error: Error | null;
   resetErrorBoundary: () => void;
 }
 
-export default function ErrorFallback({
+const ErrorFallback = ({
   error,
   resetErrorBoundary,
-}: ErrorFallbackProps) {
+}: ErrorFallbackProps) =>  {
   const errorMessage = error?.message || "An unexpected error occurred.";
 
   return (
@@ -39,3 +39,5 @@ export default function ErrorFallback({
     </div>
   );
 }
+
+export default ErrorFallback;

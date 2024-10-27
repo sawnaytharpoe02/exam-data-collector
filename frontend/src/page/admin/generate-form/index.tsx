@@ -1,4 +1,4 @@
-import { MultiSelect } from "@/components/multi-select";
+import { MultiSelect } from "@/components/ui/multi-select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
