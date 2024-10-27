@@ -1,7 +1,16 @@
 import { MultiSelect } from "@/components/multi-select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { useExams } from "@/services/queries";
+import { IResExams } from "@/types";
 import { useState } from "react";
 
 const monthsList = [
@@ -20,6 +29,7 @@ const monthsList = [
 ];
 
 const GenerateFormPage = () => {
+  const [selectedExam, setSelectedExam] = useState<string>();
   const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
   const [selectedDates, setSelectedDates] = useState<string[]>([
     "1",
@@ -29,6 +39,8 @@ const GenerateFormPage = () => {
     "5",
   ]);
 
+  const { data: exams } = useExams();
+
   const toggleDate = (date: string) => {
     setSelectedDates((prev) =>
       prev.includes(date) ? prev.filter((n) => n !== date) : [...prev, date]
@@ -37,6 +49,7 @@ const GenerateFormPage = () => {
 
   const handleGenerate = () => {
     const payload = {
+      exam_type: selectedExam,
       months: selectedMonths,
       dates: selectedDates,
     };
@@ -44,11 +57,31 @@ const GenerateFormPage = () => {
     console.log(payload);
   };
 
+  console.log("exam lists", exams);
+
   return (
     <div className="p-4 w-full">
       <h1 className="text-2xl font-bold mb-4">Generate months and dates</h1>
 
       <div className="max-w-2xl flex flex-col gap-4 items-start">
+        <div>
+          <Label htmlFor="months">Exam Type</Label>
+          <Select
+            onValueChange={(value) => setSelectedExam(value)}
+            value={selectedExam}>
+            <SelectTrigger className="w-[300px] md:w-[350px] mt-3">
+              <SelectValue placeholder="Select Exam Type" />
+            </SelectTrigger>
+            <SelectContent className="w-[300px] md:w-[350px]">
+              {exams?.map((exam: IResExams) => (
+                <SelectItem key={exam._id} value={exam._id}>
+                  {exam.exam_type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Exam Available Months */}
         <div>
           <Label htmlFor="months">Months</Label>

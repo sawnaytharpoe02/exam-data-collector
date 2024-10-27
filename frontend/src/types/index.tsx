@@ -56,3 +56,11 @@ export interface IResCustomer extends IReqCustomer {
   created_at: string;
   updated_at: string;
 }
+
+export interface IResExams {
+  _id: string;
+  exam_type: string;
+  section?: string | null;
+  created_at: string;
+  updated_at: string;
+}
