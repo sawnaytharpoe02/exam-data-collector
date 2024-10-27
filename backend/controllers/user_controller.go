@@ -38,6 +38,10 @@ func (uc *UserController) GetUsers(c *gin.Context) {
 		return
 	}
 
+	if users == nil {
+		users = []models.User{}
+	}
+
 	// Return the list of users as JSON
 	c.JSON(http.StatusOK, users)
 }
@@ -47,19 +51,29 @@ func (uc *UserController) GetUsers(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user body models.RequestUser true "User"
+// @Param user body models.CreateUserRequest true "User"
 // @Success 200 {object} models.User
 // @Router /api/customers/create_customer [post]
 func (uc *UserController) CreateUser(c *gin.Context) {
-	var user models.User
-	if err := c.ShouldBindJSON(&user); err != nil {
+	var create_user models.CreateUserRequest
+	if err := c.ShouldBindJSON(&create_user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user.Id = primitive.NewObjectID()
-	user.CreateAt = time.Now()
-	user.UpdatedAt = time.Now()
+	user := models.RequestUser{
+		Name:               create_user.Name,
+		Email:              create_user.Email,
+		Prometric_ID:       create_user.Prometric_ID,
+		Prometric_Password: create_user.Prometric_Password,
+		Status:             "open",
+		Dob:                create_user.Dob,
+		Exam_ID:            create_user.Exam_ID,
+		Month:              create_user.Month,
+		Day:                create_user.Day,
+		CreatedAt:          time.Now(),
+		UpdatedAt:          time.Now(),
+	}
 
 	_, err := uc.Collection.InsertOne(context.TODO(), user)
 	if err != nil {

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -25,27 +24,20 @@ func ConnectDB() {
 		log.Fatal("DATABASE_URL is not set in .env file")
 	}
 
-	clientOptions := options.Client().ApplyURI(databaseURL)
-	client, err := mongo.NewClient(clientOptions)
+	ctx := context.TODO()
+
+	mongoconn := options.Client().ApplyURI(databaseURL)
+	mongoclient, err := mongo.Connect(ctx, mongoconn)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	err = client.Connect(ctx)
-	if err != nil {
-		log.Fatal(err)
+	if err := mongoclient.Ping(ctx, readpref.Primary()); err != nil {
+		panic(err)
 	}
+	fmt.Println("MongoDB successfully connected...")
 
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	DB = client
-	fmt.Println("Connected to MongoDB")
+	DB = mongoclient
 }
 
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {

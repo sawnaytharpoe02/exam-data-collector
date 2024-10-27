@@ -161,7 +161,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.RequestUser"
+                            "$ref": "#/definitions/models.CreateUserRequest"
                         }
                     }
                 ],
@@ -347,6 +347,45 @@ const docTemplate = `{
                 }
             }
         },
+        "models.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "day",
+                "dob",
+                "email",
+                "exam_id",
+                "month",
+                "name",
+                "prometric_id",
+                "prometric_password"
+            ],
+            "properties": {
+                "day": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "exam_id": {
+                    "type": "string"
+                },
+                "month": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "prometric_id": {
+                    "type": "string"
+                },
+                "prometric_password": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Exam": {
             "type": "object",
             "required": [
@@ -400,40 +439,14 @@ const docTemplate = `{
                 }
             }
         },
-        "models.RequestUser": {
-            "type": "object",
-            "required": [
-                "email",
-                "name",
-                "prometric_id",
-                "prometric_password",
-                "status"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "prometric_id": {
-                    "type": "string"
-                },
-                "prometric_password": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "tempoary_data": {
-                    "type": "string"
-                }
-            }
-        },
         "models.User": {
             "type": "object",
             "required": [
+                "day",
+                "dob",
                 "email",
+                "exam_id",
+                "month",
                 "name",
                 "prometric_id",
                 "prometric_password",
@@ -446,7 +459,19 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "day": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
                 "email": {
+                    "type": "string"
+                },
+                "exam_id": {
+                    "type": "string"
+                },
+                "month": {
                     "type": "string"
                 },
                 "name": {
@@ -459,9 +484,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
-                },
-                "tempoary_data": {
                     "type": "string"
                 },
                 "updated_at": {

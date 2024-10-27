@@ -18,6 +18,34 @@ definitions:
     - password
     - user_name
     type: object
+  models.CreateUserRequest:
+    properties:
+      day:
+        type: string
+      dob:
+        type: string
+      email:
+        type: string
+      exam_id:
+        type: string
+      month:
+        type: string
+      name:
+        type: string
+      prometric_id:
+        type: string
+      prometric_password:
+        type: string
+    required:
+    - day
+    - dob
+    - email
+    - exam_id
+    - month
+    - name
+    - prometric_id
+    - prometric_password
+    type: object
   models.Exam:
     properties:
       _id:
@@ -53,34 +81,21 @@ definitions:
     - password
     - user_name
     type: object
-  models.RequestUser:
-    properties:
-      email:
-        type: string
-      name:
-        type: string
-      prometric_id:
-        type: string
-      prometric_password:
-        type: string
-      status:
-        type: string
-      tempoary_data:
-        type: string
-    required:
-    - email
-    - name
-    - prometric_id
-    - prometric_password
-    - status
-    type: object
   models.User:
     properties:
       _id:
         type: string
       created_at:
         type: string
+      day:
+        type: string
+      dob:
+        type: string
       email:
+        type: string
+      exam_id:
+        type: string
+      month:
         type: string
       name:
         type: string
@@ -90,12 +105,14 @@ definitions:
         type: string
       status:
         type: string
-      tempoary_data:
-        type: string
       updated_at:
         type: string
     required:
+    - day
+    - dob
     - email
+    - exam_id
+    - month
     - name
     - prometric_id
     - prometric_password
@@ -239,7 +256,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.RequestUser'
+          $ref: '#/definitions/models.CreateUserRequest'
       produces:
       - application/json
       responses:
