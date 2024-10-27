@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { useCustomerStore } from "@/store/customerStore";
 import { TCustomer } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import clsx from "clsx";
@@ -54,40 +53,25 @@ export const columns: ColumnDef<TCustomer>[] = [
   {
     accessorKey: "_id",
     header: ({ table }) => {
-      const { selectedCustomerIds, toggleAllCustomerSelection } =
-        useCustomerStore();
-
-      const allRowIds = table
-        .getRowModel()
-        .rows.map((row) => row.getValue("_id"));
-      const isAllSelected = allRowIds.length === selectedCustomerIds.length;
-
       return (
         <Checkbox
           checked={
-            isAllSelected ||
+            table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={(value) => {
             table.toggleAllPageRowsSelected(!!value);
-            toggleAllCustomerSelection(allRowIds as string[], !!value);
           }}
           aria-label="Select all"
         />
       );
     },
     cell: ({ row }) => {
-      const { selectedCustomerIds, toggleCustomerSelection } =
-        useCustomerStore();
-      const rowId: string = row.getValue("_id");
-      const isSelected = selectedCustomerIds.includes(rowId);
-
       return (
         <Checkbox
-          checked={isSelected}
+          checked={row.getIsSelected()}
           onCheckedChange={(value) => {
             row.toggleSelected(!!value);
-            toggleCustomerSelection(rowId, !!value);
           }}
           aria-label="Select row"
         />
@@ -111,11 +95,11 @@ export const columns: ColumnDef<TCustomer>[] = [
   },
   {
     accessorKey: "prometric_id",
-    header: "Prometric Id",
+    header: "P ID",
   },
   {
     accessorKey: "prometric_password",
-    header: "Prometric Password",
+    header: "P Password",
   },
 
   {
@@ -138,7 +122,7 @@ export const columns: ColumnDef<TCustomer>[] = [
 
   {
     accessorKey: "exam_type",
-    header: "Exam Type",
+    header: "Exam type",
   },
   {
     accessorKey: "section",
