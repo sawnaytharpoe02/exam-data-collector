@@ -1,8 +1,8 @@
 import { TCustomer } from "@/types";
 import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
-import { columns } from "./customers-columns";
-import { CustomerDataTable } from "./customers-data-table";
+import { CustomersTableColumns } from "./customers-table-columns";
+import { CustomersTable } from "./customers-table";
 
 async function getCustomersData(): Promise<TCustomer[]> {
   // Fetch data from your API here.
@@ -49,7 +49,7 @@ const CustomerListsPage = () => {
 
   return (
     <div className="p-1 lg:px-4">
-      <CustomerDataTable columns={columns} data={data} />
+      <CustomersTable columns={CustomersTableColumns} data={data} />
     </div>
   );
 };

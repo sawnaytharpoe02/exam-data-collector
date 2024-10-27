@@ -49,7 +49,7 @@ const statusBadgeMapping = {
   },
 };
 
-export const columns: ColumnDef<TCustomer>[] = [
+export const CustomersTableColumns: ColumnDef<TCustomer>[] = [
   {
     accessorKey: "_id",
     header: ({ table }) => {

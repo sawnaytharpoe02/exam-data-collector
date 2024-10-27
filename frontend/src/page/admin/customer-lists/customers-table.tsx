@@ -32,15 +32,15 @@ import { useState } from "react";
 import CustomersTableToolbar from "./customers-table-toolbar";
 import { CustomersTableViewOptions } from "./customers-table-view-options";
 
-interface CustomerDataTableProps<TData, TValue> {
+interface CustomersTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function CustomerDataTable<TData, TValue>({
+export function CustomersTable<TData, TValue>({
   columns,
   data,
-}: CustomerDataTableProps<TData, TValue>) {
+}: CustomersTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
