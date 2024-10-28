@@ -38,6 +38,6 @@ func SetupRoutes(r *gin.Engine) {
 		admin.GET("/get_all_admins", adminController.GetAllAdmins)
 		admin.POST("/create_admin", adminController.CreateAdmin)
 		admin.GET("/:id/get_admin", adminController.GetAdmin)
-		admin.POST("/forgot_password", adminController.AdminForgotPassword)
+		admin.GET("/forgot_password", adminController.AdminForgotPassword)
 	}
 }

@@ -50,7 +50,7 @@ const docTemplate = `{
             }
         },
         "/api/admins/forgot_password": {
-            "post": {
+            "get": {
                 "description": "Send mail to forgot password mail",
                 "consumes": [
                     "application/json"
@@ -62,17 +62,6 @@ const docTemplate = `{
                     "Admins"
                 ],
                 "summary": "AdminForgotPassword - Admin forgot password",
-                "parameters": [
-                    {
-                        "description": "Admin",
-                        "name": "admin",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.ForgotPasswordRequest"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Email sent successfully",
@@ -405,17 +394,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.ForgotPasswordRequest": {
-            "type": "object",
-            "required": [
-                "email"
-            ],
-            "properties": {
-                "email": {
                     "type": "string"
                 }
             }
