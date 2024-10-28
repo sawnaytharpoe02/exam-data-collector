@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+
 import {
   Select,
   SelectContent,
@@ -14,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PinBottomIcon, TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -31,6 +32,7 @@ import {
 import { useState } from "react";
 import CustomersTableToolbar from "./customers-table-toolbar";
 import { CustomersTableViewOptions } from "./customers-table-view-options";
+import ExcelExportButton from "./excel-export-button";
 
 interface CustomersTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -95,9 +97,7 @@ export function CustomersTable<TData, TValue>({
           </Button>
 
           {/* Export csv file for customers data  */}
-          <Button variant={"outline"} size={"sm"}>
-            <PinBottomIcon className="mr-2" /> Export
-          </Button>
+          <ExcelExportButton exams={data} />
         </div>
       </div>
 

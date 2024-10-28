@@ -1,8 +1,8 @@
 import { TCustomer } from "@/types";
 import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
-import { CustomersTableColumns } from "./customers-table-columns";
 import { CustomersTable } from "./customers-table";
+import { CustomersTableColumns } from "./customers-table-columns";
 
 async function getCustomersData(): Promise<TCustomer[]> {
   // Fetch data from your API here.
@@ -15,10 +15,12 @@ async function getCustomersData(): Promise<TCustomer[]> {
       name: faker.person.firstName().toLowerCase(),
       dob: faker.date.birthdate().toISOString().split("T")[0], // formatted as YYYY-MM-DD
       prometric_id: `JP${faker.number.int({ min: 100000, max: 999999 })}`,
-      prometric_password: faker.number.int({ min: 100000, max: 999999 }).toString(),
+      prometric_password: faker.number
+        .int({ min: 100000, max: 999999 })
+        .toString(),
       email: faker.internet.email(),
-      exam_type: faker.helpers.arrayElement(["FOOD", "KAIGO", "JFT"]),
-      section: null,
+      exam_type: faker.helpers.arrayElement(["FOOD", "KAIGO/NURSING", "JFT"]),
+      section: faker.helpers.arrayElement([null, "JP", "MM"]),
       status: faker.helpers.arrayElement([
         "in progress",
         "done",
@@ -37,6 +39,7 @@ async function getCustomersData(): Promise<TCustomer[]> {
 
 const CustomerListsPage = () => {
   const [data, setData] = useState<TCustomer[]>([]);
+  console.log(data);
 
   useEffect(() => {
     const fetchData = async () => {
