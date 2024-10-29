@@ -5,10 +5,10 @@ import { Label } from "@/components/ui/label";
 import { useLogin } from "@/hooks/useLogin";
 import { LoaderCircle, UserCircle2 } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import ServiceCollectRobot from "./service-collect-robot";
+import { Link, useNavigate } from "react-router-dom";
+import ServiceCollectRobot from "../service-collect-robot";
 
-const AuthPage = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -75,6 +75,13 @@ const AuthPage = () => {
               required
             />
           </div>
+          <div className="text-right">
+            <Link
+              to="/auth/forgot-password"
+              className="text-sm text-primary hover:underline">
+              Forgot Password?
+            </Link>
+          </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <Button
@@ -128,4 +135,4 @@ const AuthPage = () => {
   );
 };
 
-export default AuthPage;
+export default LoginPage;

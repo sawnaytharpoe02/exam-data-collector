@@ -1,19 +1,11 @@
-import { useState } from "react";
-
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-  VisibilityState,
-} from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -22,27 +14,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCustomerStore } from "@/store/customerStore";
 import { PinBottomIcon, TrashIcon } from "@radix-ui/react-icons";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table";
+import { useState } from "react";
 import CustomersTableToolbar from "./customers-table-toolbar";
 import { CustomersTableViewOptions } from "./customers-table-view-options";
 
-interface CustomerDataTableProps<TData, TValue> {
+interface CustomersTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function CustomerDataTable<TData, TValue>({
+export function CustomersTable<TData, TValue>({
   columns,
   data,
-}: CustomerDataTableProps<TData, TValue>) {
+}: CustomersTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
-  const { selectedCustomerIds } = useCustomerStore();
-  console.log("stored selected customer ids", selectedCustomerIds);
 
   const table = useReactTable({
     data,
@@ -56,6 +58,7 @@ export function CustomerDataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFacetedRowModel: getFacetedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       sorting,
       columnVisibility,
@@ -63,6 +66,15 @@ export function CustomerDataTable<TData, TValue>({
       columnFilters,
     },
   });
+
+  const selectedRowIds = table
+    .getFilteredSelectedRowModel()
+    .rows.map((row) => row.getValue("_id"));
+
+  const handleDeleteCustomers = () => {
+    // TODO: Implement delete customers logic
+    console.log("Selected customers to delete:", selectedRowIds);
+  };
 
   return (
     <>
@@ -76,8 +88,9 @@ export function CustomerDataTable<TData, TValue>({
           {/* Delete customers row */}
           <Button
             variant={"destructive"}
-            disabled={selectedCustomerIds.length === 0}
-            size={"sm"}>
+            disabled={selectedRowIds.length === 0}
+            size={"sm"}
+            onClick={handleDeleteCustomers}>
             <TrashIcon className="mr-2" /> Delete
           </Button>
 
@@ -138,10 +151,52 @@ export function CustomerDataTable<TData, TValue>({
         </Table>
       </div>
       {/* Select Count and Pagination Section */}
-      <div className="my-5">
+      <div className="my-5 flex justify-between itmes-center">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+
+        <div className="flex justify-end space-x-2">
+          <div className="flex items-center space-x-2">
+            <p className="text-sm font-medium">Rows per page</p>
+            <Select
+              value={`${table.getState().pagination.pageSize}`}
+              onValueChange={(value) => {
+                table.setPageSize(Number(value));
+              }}>
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}>
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}>
+            Next
+          </Button>
         </div>
       </div>
     </>

@@ -61,13 +61,6 @@ definitions:
     required:
     - exam_type
     type: object
-  models.ForgotPasswordRequest:
-    properties:
-      email:
-        type: string
-    required:
-    - email
-    type: object
   models.RequestAdmin:
     properties:
       email:
@@ -165,17 +158,10 @@ paths:
       tags:
       - Admins
   /api/admins/forgot_password:
-    post:
+    get:
       consumes:
       - application/json
       description: Send mail to forgot password mail
-      parameters:
-      - description: Admin
-        in: body
-        name: admin
-        required: true
-        schema:
-          $ref: '#/definitions/models.ForgotPasswordRequest'
       produces:
       - application/json
       responses:

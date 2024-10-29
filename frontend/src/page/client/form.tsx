@@ -54,7 +54,6 @@ const FormPage = () => {
   // const createCustomerMutation = useCreateCustomer();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("hi");
     const payload = {
       prometric_id: values.prometric_id,
       prometric_password: values.prometric_password,
