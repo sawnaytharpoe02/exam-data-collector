@@ -40,4 +40,17 @@ func SetupRoutes(r *gin.Engine) {
 		admin.GET("/:id/get_admin", adminController.GetAdmin)
 		admin.POST("/forgot_password", adminController.AdminForgotPassword)
 	}
+
+	// Available Exam routes
+	availableExamController := controllers.AvaliableExamDataCollector{
+		Collection: configs.GetCollection(configs.DB, "available_exam_data"),
+	}
+	available_exam := r.Group("/api/available_exams")
+	{
+		available_exam.GET("/get_all_available_exams", availableExamController.GetAvailableExams)
+		available_exam.POST("/create_available_exam", availableExamController.CreateAvaliableExam)
+		available_exam.GET("/:id/get_available_exam", availableExamController.GetAvailableExam)
+		available_exam.DELETE("/:id/delete_available_exam", availableExamController.DeleteAvailableExam)
+	}
+
 }

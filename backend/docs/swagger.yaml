@@ -20,6 +20,29 @@ definitions:
     - password
     - user_name
     type: object
+  models.AvailableExams:
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+      dates:
+        items:
+          type: string
+        type: array
+      exam_type:
+        type: string
+      months:
+        items:
+          type: string
+        type: array
+      updated_at:
+        type: string
+    required:
+    - dates
+    - exam_type
+    - months
+    type: object
   models.CreateAdminRequest:
     properties:
       email:
@@ -34,6 +57,23 @@ definitions:
     - email
     - name
     - password
+    type: object
+  models.CreateAvailableExamRequest:
+    properties:
+      dates:
+        items:
+          type: string
+        type: array
+      exam_type:
+        type: string
+      months:
+        items:
+          type: string
+        type: array
+    required:
+    - dates
+    - exam_type
+    - months
     type: object
   models.CreateUserRequest:
     properties:
@@ -209,6 +249,87 @@ paths:
       summary: Get all admins
       tags:
       - Admins
+  /api/available_exams/{id}/delete_available_exam:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a available exam
+      parameters:
+      - description: Available Exam ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Available exam data deleted successfully
+          schema:
+            type: string
+      summary: Delete a available exam
+      tags:
+      - Available_Exams
+  /api/available_exams/{id}/get_available_exam:
+    get:
+      consumes:
+      - application/json
+      description: Get available exam detail
+      parameters:
+      - description: Available Exam ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AvailableExams'
+      summary: Get available exam
+      tags:
+      - Available_Exams
+  /api/available_exams/create_available_exam:
+    post:
+      consumes:
+      - application/json
+      description: Create a new available exam in the system
+      parameters:
+      - description: Available_Exams
+        in: body
+        name: available_exam
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateAvailableExamRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AvailableExams'
+      summary: Create a new available exam
+      tags:
+      - Available_Exams
+  /api/available_exams/get_all_available_exams:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of available exam
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.AvailableExams'
+            type: array
+      summary: Get all available exams
+      tags:
+      - Available_Exams
   /api/customers/{id}/delete_customer:
     delete:
       consumes:
