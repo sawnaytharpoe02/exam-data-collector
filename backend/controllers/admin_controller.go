@@ -48,19 +48,22 @@ func (uc *AdminController) GetAllAdmins(c *gin.Context) {
 // @Tags Admins
 // @Accept json
 // @Produce json
-// @Param admin body models.RequestAdmin true "Admin"
+// @Param admin body models.CreateAdminRequest true "Admin"
 // @Success 200 {object} models.Admin
 // @Router /api/admins/create_admin [post]
 func (uc *AdminController) CreateAdmin(c *gin.Context) {
-	var admin models.Admin
-	if err := c.ShouldBindJSON(&admin); err != nil {
+	var create_admin models.CreateAdminRequest
+	if err := c.ShouldBindJSON(&create_admin); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	admin.Id = primitive.NewObjectID()
-	admin.CreateAt = time.Now()
-	admin.UpdatedAt = time.Now()
+	admin := models.RequestAdmin{
+		User_Name: create_admin.User_Name,
+		Password:  create_admin.Password,
+		CreateAt:  time.Now(),
+		UpdatedAt: time.Now(),
+	}
 
 	_, err := uc.Collection.InsertOne(context.TODO(), admin)
 	if err != nil {
@@ -108,17 +111,24 @@ func (uc *AdminController) GetAdmin(c *gin.Context) {
 // @Tags Admins
 // @Accept json
 // @Produce json
+// @Param admin body models.ForgotPasswordRequest true "Admin"
 // @Success 200 {string} string "Email sent successfully"
-// @Router /api/admins/forgot_password [get]
+// @Router /api/admins/forgot_password [post]
 func (uc *AdminController) AdminForgotPassword(c *gin.Context) {
-	// var admin_email models.ForgotPasswordRequest
+	var admin models.ForgotPasswordRequest
+
+	if err := c.ShouldBindJSON(&admin); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println(admin.Email, "this is email.....")
 
 	from := "nal27201@gmail.com"
 	password := "kvwy gljo beab uykn"
 
 	// Receiver email address.
 	to := []string{
-		"naingaung.lwin01@kbzbank.com",
+		admin.Email,
 	}
 
 	// smtp server configuration.
@@ -134,8 +144,9 @@ func (uc *AdminController) AdminForgotPassword(c *gin.Context) {
 	// Sending email.
 	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
 	if err != nil {
-		fmt.Println(err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "Email not found"})
 		return
 	}
-	fmt.Println("Email Sent Successfully!")
+
+	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
 }

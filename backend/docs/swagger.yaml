@@ -9,6 +9,8 @@ definitions:
         type: string
       password:
         type: string
+      token:
+        type: string
       updated_at:
         type: string
       user_name:
@@ -17,6 +19,21 @@ definitions:
     - email
     - password
     - user_name
+    type: object
+  models.CreateAdminRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      token:
+        type: string
+    required:
+    - email
+    - name
+    - password
     type: object
   models.CreateUserRequest:
     properties:
@@ -55,24 +72,20 @@ definitions:
       exam_type:
         type: string
       section:
-        type: string
+        items:
+          type: string
+        type: array
       updated_at:
         type: string
     required:
     - exam_type
     type: object
-  models.RequestAdmin:
+  models.ForgotPasswordRequest:
     properties:
       email:
         type: string
-      password:
-        type: string
-      user_name:
-        type: string
     required:
     - email
-    - password
-    - user_name
     type: object
   models.User:
     properties:
@@ -146,7 +159,7 @@ paths:
         name: admin
         required: true
         schema:
-          $ref: '#/definitions/models.RequestAdmin'
+          $ref: '#/definitions/models.CreateAdminRequest'
       produces:
       - application/json
       responses:
@@ -158,10 +171,17 @@ paths:
       tags:
       - Admins
   /api/admins/forgot_password:
-    get:
+    post:
       consumes:
       - application/json
       description: Send mail to forgot password mail
+      parameters:
+      - description: Admin
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.ForgotPasswordRequest'
       produces:
       - application/json
       responses:

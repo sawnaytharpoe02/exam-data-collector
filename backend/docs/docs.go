@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.RequestAdmin"
+                            "$ref": "#/definitions/models.CreateAdminRequest"
                         }
                     }
                 ],
@@ -50,7 +50,7 @@ const docTemplate = `{
             }
         },
         "/api/admins/forgot_password": {
-            "get": {
+            "post": {
                 "description": "Send mail to forgot password mail",
                 "consumes": [
                     "application/json"
@@ -62,6 +62,17 @@ const docTemplate = `{
                     "Admins"
                 ],
                 "summary": "AdminForgotPassword - Admin forgot password",
+                "parameters": [
+                    {
+                        "description": "Admin",
+                        "name": "admin",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ForgotPasswordRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Email sent successfully",
@@ -328,10 +339,35 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
+                "token": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 },
                 "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateAdminRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "token": {
                     "type": "string"
                 }
             }
@@ -391,28 +427,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "section": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "updated_at": {
                     "type": "string"
                 }
             }
         },
-        "models.RequestAdmin": {
+        "models.ForgotPasswordRequest": {
             "type": "object",
             "required": [
-                "email",
-                "password",
-                "user_name"
+                "email"
             ],
             "properties": {
                 "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "user_name": {
                     "type": "string"
                 }
             }

@@ -60,7 +60,7 @@ func (uc *ExamController) CreateExams(c *gin.Context) {
 		models.Exam{
 			Id:        primitive.NewObjectID(),
 			Exam_Type: "Kaigo / Nursing care skills evaluation test, Nursing care Japanese language evaluation test",
-			Section:   "JP",
+			Section:   []string{"JP", "MM"},
 			CreateAt:  time.Now(),
 			UpdatedAt: time.Now(),
 		},
