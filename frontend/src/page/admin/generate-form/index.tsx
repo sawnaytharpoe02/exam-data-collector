@@ -1,6 +1,6 @@
-import { MultiSelect } from "@/components/ui/multi-select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -60,8 +60,8 @@ const GenerateFormPage = () => {
   console.log("exam lists", exams);
 
   return (
-    <div className="p-4 w-full">
-      <h1 className="text-2xl font-bold mb-4">Generate months and dates</h1>
+    <div>
+      <h1 className="text-xl font-bold mb-4">Generate months and dates</h1>
 
       <div className="max-w-2xl flex flex-col gap-4 items-start">
         <div>

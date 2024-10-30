@@ -51,7 +51,8 @@ const CustomerListsPage = () => {
   }, []);
 
   return (
-    <div className="p-1 lg:px-4">
+    <div>
+      <h1 className="text-xl font-bold mb-4">Customers service lists</h1>
       <CustomersTable columns={CustomersTableColumns} data={data} />
     </div>
   );

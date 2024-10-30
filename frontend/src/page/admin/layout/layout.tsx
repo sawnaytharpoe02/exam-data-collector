@@ -1,39 +1,23 @@
 import { Separator } from "@/components/ui/separator";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
-import SidebarNav from "./sidebarnav";
-
-const sidebarNavItems = [
-  {
-    title: "Customer Lists",
-    href: "/dashboard/customer-lists",
-  },
-  {
-    title: "Generate Form",
-    href: "/dashboard/generate-form",
-  },
-];
+import DashboardSidebar from "./dashboard-sidebar";
 
 const DashboardLayout = () => {
   return (
-    <>
-      <div className="space-y-6 p-4 lg:p-10 pb-16 md:block">
-        <div className="space-y-0.5">
-          <h2 className="text-2xl font-bold tracking-tight">Admin Settings</h2>
-          <p className="text-muted-foreground">
-            Manage your customer services and generate dynamic exam data form.
-          </p>
+    <SidebarProvider>
+      <DashboardSidebar />
+      <SidebarInset>
+        <header className="sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4">
+          <SidebarTrigger className="-ml-1 size-4" />
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          Manage your customer services and generate dynamic exam data form.
+        </header>
+        <div className="flex flex-col gap-4 p-4">
+          <Outlet />
         </div>
-        <Separator className="my-6" />
-        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/6">
-            <SidebarNav items={sidebarNavItems} />
-          </aside>
-          <div className="flex-1 lg:max-w-screen">
-            <Outlet />
-          </div>
-        </div>
-      </div>
-    </>
+      </SidebarInset>
+    </SidebarProvider>
   );
 };
 

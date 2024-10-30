@@ -79,7 +79,7 @@ export function CustomersTable<TData, TValue>({
   };
 
   return (
-    <>
+    <div>
       {/* Data Table Navigation Filtering and Searching */}
       <div className="flex lg:items-center flex-col lg:flex-row justify-between mb-4 gap-2">
         <CustomersTableToolbar table={table} />
@@ -199,6 +199,6 @@ export function CustomersTable<TData, TValue>({
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

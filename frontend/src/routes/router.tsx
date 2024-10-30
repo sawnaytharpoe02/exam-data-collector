@@ -1,6 +1,7 @@
 import ErrorFallback from "@/components/error-fallback";
 import CustomerListsPage from "@/page/admin/customer-lists";
 import GenerateFormPage from "@/page/admin/generate-form";
+import GeneratedFormTable from "@/page/admin/generate-form/generate-form-table";
 import DashboardLayout from "@/page/admin/layout/layout";
 import ChangePasswordPage from "@/page/auth/change-password";
 import ForgotPasswordPage from "@/page/auth/forgot-password";
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
         element: <DashboardLayout />,
         children: [
           { path: "customer-lists", element: <CustomerListsPage /> },
+          { path: "generated-form-lists", element: <GeneratedFormTable /> },
           { path: "generate-form", element: <GenerateFormPage /> },
         ],
       },
