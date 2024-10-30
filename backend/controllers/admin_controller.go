@@ -123,8 +123,8 @@ func (uc *AdminController) AdminForgotPassword(c *gin.Context) {
 	}
 	fmt.Println(admin.Email, "this is email.....")
 
-	from := "nal27201@gmail.com"
-	password := "kvwy gljo beab uykn"
+	from := "sawnaytharhpoe02@gmail.com"
+	password := "ncac hdyk wvay poix"
 
 	// Receiver email address.
 	to := []string{
