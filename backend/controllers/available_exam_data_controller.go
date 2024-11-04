@@ -90,13 +90,13 @@ func (uc *AvaliableExamDataCollector) CreateAvaliableExam(c *gin.Context) {
 		UpdatedAt: time.Now(),
 	}
 
-	result, err := uc.Collection.InsertOne(context.TODO(), available_exam)
+	_, err = uc.Collection.InsertOne(context.TODO(), available_exam)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, available_exam)
 }
 
 // @Summary Get available exam
