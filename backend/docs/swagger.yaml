@@ -31,7 +31,7 @@ definitions:
           type: string
         type: array
       exam_type:
-        type: string
+        $ref: '#/definitions/models.ExamTypeDetails'
       months:
         items:
           type: string
@@ -117,6 +117,19 @@ definitions:
         type: array
       updated_at:
         type: string
+    required:
+    - exam_type
+    type: object
+  models.ExamTypeDetails:
+    properties:
+      _id:
+        type: string
+      exam_type:
+        type: string
+      section:
+        items:
+          type: string
+        type: array
     required:
     - exam_type
     type: object
@@ -411,6 +424,27 @@ paths:
       summary: Get all users
       tags:
       - Users
+  /api/exams/{id}/get_exam:
+    get:
+      consumes:
+      - application/json
+      description: Get exam detail
+      parameters:
+      - description: Exam ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Exam'
+      summary: Get exam
+      tags:
+      - Exams
   /api/exams/create_exams:
     post:
       consumes:

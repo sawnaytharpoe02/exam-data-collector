@@ -440,6 +440,38 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/exams/{id}/get_exam": {
+            "get": {
+                "description": "Get exam detail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exams"
+                ],
+                "summary": "Get exam",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Exam ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Exam"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -495,7 +527,7 @@ const docTemplate = `{
                     }
                 },
                 "exam_type": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.ExamTypeDetails"
                 },
                 "months": {
                     "type": "array",
@@ -617,6 +649,26 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "models.ExamTypeDetails": {
+            "type": "object",
+            "required": [
+                "exam_type"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "exam_type": {
+                    "type": "string"
+                },
+                "section": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
