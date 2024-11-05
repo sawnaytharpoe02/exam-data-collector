@@ -3,6 +3,7 @@ package controllers
 import (
 	"backend/models"
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -12,9 +13,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type AvaliableExamDataCollector struct {
-	Collection     *mongo.Collection
-	ExamController *ExamController
+type AvailableExamController struct {
+	Collection *mongo.Collection
+}
+
+type Collector struct {
+	AvaliableExamDataController *AvailableExamController
+	ExamController              *ExamController
 }
 
 // @Summary Get all available exams
@@ -24,7 +29,7 @@ type AvaliableExamDataCollector struct {
 // @Produce json
 // @Success 200 {array} models.AvailableExams
 // @Router /api/available_exams/get_all_available_exams [get]
-func (uc *AvaliableExamDataCollector) GetAvailableExams(c *gin.Context) {
+func (uc *AvailableExamController) GetAvailableExams(c *gin.Context) {
 	var available_exams []models.AvailableExams
 
 	cursor, err := uc.Collection.Find(context.TODO(), bson.D{})
@@ -37,6 +42,8 @@ func (uc *AvaliableExamDataCollector) GetAvailableExams(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error decoding available exams"})
 		return
 	}
+
+	fmt.Println(available_exams, "this is exams......")
 
 	if available_exams == nil {
 		available_exams = []models.AvailableExams{}
@@ -53,7 +60,7 @@ func (uc *AvaliableExamDataCollector) GetAvailableExams(c *gin.Context) {
 // @Param available_exam body models.CreateAvailableExamRequest true "Available_Exams"
 // @Success 200 {object} models.AvailableExams
 // @Router /api/available_exams/create_available_exam [post]
-func (uc *AvaliableExamDataCollector) CreateAvaliableExam(c *gin.Context) {
+func (uc *Collector) CreateAvaliableExam(c *gin.Context) {
 	var create_available_exam models.CreateAvailableExamRequest
 	if err := c.ShouldBindJSON(&create_available_exam); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -90,7 +97,7 @@ func (uc *AvaliableExamDataCollector) CreateAvaliableExam(c *gin.Context) {
 		UpdatedAt: time.Now(),
 	}
 
-	_, err = uc.Collection.InsertOne(context.TODO(), available_exam)
+	_, err = uc.AvaliableExamDataController.Collection.InsertOne(context.TODO(), available_exam)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -107,7 +114,7 @@ func (uc *AvaliableExamDataCollector) CreateAvaliableExam(c *gin.Context) {
 // @Param id path string true "Available Exam ID"
 // @Success 200 {object} models.AvailableExams
 // @Router /api/available_exams/{id}/get_available_exam [get]
-func (uc *AvaliableExamDataCollector) GetAvailableExam(c *gin.Context) {
+func (uc *AvailableExamController) GetAvailableExam(c *gin.Context) {
 	available_exam_id := c.Param("id")
 
 	objID, err := primitive.ObjectIDFromHex(available_exam_id)
@@ -138,7 +145,7 @@ func (uc *AvaliableExamDataCollector) GetAvailableExam(c *gin.Context) {
 // @Param id path string true "Available Exam ID"
 // @Success 200 {string} string "Available exam data deleted successfully"
 // @Router /api/available_exams/{id}/delete_available_exam [delete]
-func (uc *AvaliableExamDataCollector) DeleteAvailableExam(c *gin.Context) {
+func (uc *AvailableExamController) DeleteAvailableExam(c *gin.Context) {
 	available_exam_id := c.Param("id")
 
 	objID, err := primitive.ObjectIDFromHex(available_exam_id)
