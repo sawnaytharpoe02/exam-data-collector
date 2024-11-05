@@ -41,17 +41,20 @@ func SetupRoutes(r *gin.Engine) {
 		admin.POST("/forgot_password", adminController.AdminForgotPassword)
 	}
 
+	availableExam := controllers.AvailableExamController{
+		Collection: configs.GetCollection(configs.DB, "available_exam_data"),
+	}
 	// Available Exam routes
-	availableExamController := controllers.AvaliableExamDataCollector{
-		Collection:     configs.GetCollection(configs.DB, "available_exam_data"),
-		ExamController: &examController,
+	availableExamController := controllers.Collector{
+		AvaliableExamDataController: &availableExam,
+		ExamController:              &examController,
 	}
 	available_exam := r.Group("/api/available_exams")
 	{
-		available_exam.GET("/get_all_available_exams", availableExamController.GetAvailableExams)
+		available_exam.GET("/get_all_available_exams", availableExam.GetAvailableExams)
 		available_exam.POST("/create_available_exam", availableExamController.CreateAvaliableExam)
-		available_exam.GET("/:id/get_available_exam", availableExamController.GetAvailableExam)
-		available_exam.DELETE("/:id/delete_available_exam", availableExamController.DeleteAvailableExam)
+		available_exam.GET("/:id/get_available_exam", availableExam.GetAvailableExam)
+		available_exam.DELETE("/:id/delete_available_exam", availableExam.DeleteAvailableExam)
 	}
 
 }
