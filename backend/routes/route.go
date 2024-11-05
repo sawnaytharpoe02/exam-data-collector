@@ -43,7 +43,8 @@ func SetupRoutes(r *gin.Engine) {
 
 	// Available Exam routes
 	availableExamController := controllers.AvaliableExamDataCollector{
-		Collection: configs.GetCollection(configs.DB, "available_exam_data"),
+		Collection:     configs.GetCollection(configs.DB, "available_exam_data"),
+		ExamController: &examController,
 	}
 	available_exam := r.Group("/api/available_exams")
 	{

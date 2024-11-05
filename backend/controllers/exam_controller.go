@@ -79,3 +79,35 @@ func (uc *ExamController) CreateExams(c *gin.Context) {
 
 	c.JSON(http.StatusOK, mockExams)
 }
+
+// GetUser - Get exam from MongoDB
+// @Summary Get exam
+// @Description Get exam detail
+// @Tags Exams
+// @Accept json
+// @Produce json
+// @Param id path string true "Exam ID"
+// @Success 200 {object} models.Exam
+// @Router /api/exams/{id}/get_exam [get]
+func (uc *ExamController) GetExam(c *gin.Context, examId string) {
+	examID := c.Param("id")
+
+	objID, err := primitive.ObjectIDFromHex(examID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid exam ID"})
+		return
+	}
+
+	var exam models.Exam
+	err = uc.Collection.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&exam)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Exam not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching admin"})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, exam)
+}

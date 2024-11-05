@@ -13,7 +13,8 @@ import (
 )
 
 type AvaliableExamDataCollector struct {
-	Collection *mongo.Collection
+	Collection     *mongo.Collection
+	ExamController *ExamController
 }
 
 // @Summary Get all available exams
@@ -59,15 +60,37 @@ func (uc *AvaliableExamDataCollector) CreateAvaliableExam(c *gin.Context) {
 		return
 	}
 
+	objID, err := primitive.ObjectIDFromHex(create_available_exam.Exam_Type)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid exam ID"})
+		return
+	}
+
+	var examData models.Exam
+	err = uc.ExamController.Collection.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&examData)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Exam not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching admin"})
+		}
+		return
+	}
+
 	available_exam := models.RequestAvailableExam{
-		Exam_Type: create_available_exam.Exam_Type,
+		Exam_Type: models.ExamTypeDetails{
+			Id:        examData.Id,
+			Exam_Type: examData.Exam_Type,
+			Section:   examData.Section,
+		},
 		Months:    create_available_exam.Months,
 		Dates:     create_available_exam.Dates,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
 
-	_, err := uc.Collection.InsertOne(context.TODO(), available_exam)
+	_, err = uc.Collection.InsertOne(context.TODO(), available_exam)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

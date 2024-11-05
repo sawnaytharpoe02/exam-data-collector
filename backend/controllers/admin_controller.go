@@ -135,8 +135,15 @@ func (uc *AdminController) AdminForgotPassword(c *gin.Context) {
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
 
-	// Message.
-	message := []byte("This is a test email message.")
+	subject := "Forgot Password Request"
+	plainTextMessage := "You requested a password reset. Please click the link below to reset your password:\n"
+	plainTextMessage += "http://example.com/reset-password?email=" + admin.Email + "\n"
+	plainTextMessage += "If you did not request this, please ignore this email."
+
+	message := []byte("Subject: " + subject + "\r\n" +
+		"Content-Type: text/plain; charset=UTF-8\r\n" +
+		"\r\n" +
+		plainTextMessage)
 
 	// Authentication.
 	auth := smtp.PlainAuth("", from, password, smtpHost)
