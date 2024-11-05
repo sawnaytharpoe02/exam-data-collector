@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { formSchema } from "@/schemas";
 import { useCreateCustomer } from "@/services/mutations";
+import { useAvailableExams } from "@/services/queries";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import dayjs from "dayjs";
@@ -51,6 +52,9 @@ const FormPage = () => {
   });
 
   const _exam_type = form.watch("exam_type");
+  const { data } = useAvailableExams();
+
+  console.log(data);
   // const createCustomerMutation = useCreateCustomer();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {

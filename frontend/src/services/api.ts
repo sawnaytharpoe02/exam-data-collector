@@ -1,5 +1,22 @@
-import { IReqCustomer, IResExams } from "@/types";
+import {
+  IReqAvailableExam,
+  IReqCustomer,
+  IResAvailableExams,
+  IResExams,
+} from "@/types";
 import axiosInstance from "./axios";
+
+export const getAvailableExams = async () => {
+  return (
+    await axiosInstance.get<IResAvailableExams[]>(
+      "/available_exams/get_all_available_exams"
+    )
+  ).data;
+};
+
+export const createAvailableExam = async (data: IReqAvailableExam) => {
+  await axiosInstance.post("/available_exams/create_available_exam", data);
+};
 
 export const getExams = async () => {
   return (await axiosInstance.get<IResExams[]>("/exams/get_all_exams")).data;

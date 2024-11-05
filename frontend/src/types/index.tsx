@@ -49,7 +49,6 @@ export interface IReqCustomer {
   date: string;
 }
 
-
 export interface IResCustomer extends IReqCustomer {
   _id: string;
   status: Status;
@@ -63,4 +62,19 @@ export interface IResExams {
   section?: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface IResAvailableExams {
+  _id: string;
+  dates: string[];
+  exam_type: string;
+  months: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IReqAvailableExam {
+  dates: string[];
+  exam_type: string;
+  months: string[];
 }
