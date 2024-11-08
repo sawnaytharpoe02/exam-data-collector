@@ -148,3 +148,53 @@ func (uc *UserController) DeleteUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
+
+// @Description User update
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param user body models.UpdateUserRequest true "User data"
+// @Success 200 {object} models.User
+// @Router /api/customers/{id}/update_customer [put]
+func (uc *UserController) UpdateUser(c *gin.Context) {
+	userID := c.Param("id")
+
+	var user_data models.UpdateUserRequest
+	if err := c.ShouldBindJSON(&user_data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	var user models.User
+	err = uc.Collection.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching user"})
+		}
+		return
+	}
+
+	update_data := models.RequestUser{
+		Name:               user.Name,
+		Email:              user.Email,
+		Prometric_ID:       user.Prometric_ID,
+		Prometric_Password: user.Prometric_Password,
+		Status:             user_data.Status,
+		Dob:                user.Dob,
+		Exam_ID:            user.Exam_ID,
+		Month:              user.Month,
+		Day:                user.Day,
+		UpdatedAt:          time.Now(),
+	}
+
+	c.JSON(http.StatusOK, update_data)
+}

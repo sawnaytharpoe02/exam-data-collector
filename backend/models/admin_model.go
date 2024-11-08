@@ -35,3 +35,9 @@ type CreateAdminRequest struct {
 type ForgotPasswordRequest struct {
 	Email string `json:"email" bson:"email" binding:"required"`
 }
+
+type ForgotPasswordUpdateRequest struct {
+	Email           string `json:"email" bson:"email" binding:"required"`
+	Password        string `json:"password" bson:"password" binding:"required"`
+	ConfirmPassword string `json:"confirm_password" bson:"confirm_password" binding:"required"`
+}

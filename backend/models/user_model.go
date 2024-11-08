@@ -45,3 +45,7 @@ type RequestUser struct {
 	CreatedAt          time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	UpdatedAt          time.Time `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 }
+
+type UpdateUserRequest struct {
+	Status string `json:"status" bson:"status" binding:"required"`
+}

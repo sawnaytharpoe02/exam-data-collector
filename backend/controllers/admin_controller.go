@@ -137,7 +137,7 @@ func (uc *AdminController) AdminForgotPassword(c *gin.Context) {
 
 	subject := "Forgot Password Request"
 	plainTextMessage := "You requested a password reset. Please click the link below to reset your password:\n"
-	plainTextMessage += "http://example.com/reset-password?email=" + admin.Email + "\n"
+	plainTextMessage += " http://localhost:5173/auth/change-password?email=" + admin.Email + "\n"
 	plainTextMessage += "If you did not request this, please ignore this email."
 
 	message := []byte("Subject: " + subject + "\r\n" +
@@ -156,4 +156,52 @@ func (uc *AdminController) AdminForgotPassword(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
+}
+
+// @Description Admin Password Update
+// @Tags Admins
+// @Accept json
+// @Produce json
+// @Param admin body models.ForgotPasswordUpdateRequest true "Admin"
+// @Success 200 {string} string "Password updated successfully"
+// @Router /api/admins/update_password [post]
+func (uc *AdminController) AdminUpdatePassword(c *gin.Context) {
+	var admin models.ForgotPasswordUpdateRequest
+
+	if err := c.ShouldBindJSON(&admin); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+		return
+	}
+
+	if admin.Password != admin.ConfirmPassword {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
+		return
+	}
+
+	var admin_data models.Admin
+	err := uc.Collection.FindOne(context.TODO(), bson.M{"email": admin.Email}).Decode(&admin_data)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Admin not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching admin"})
+		}
+		return
+	}
+	update_admin := models.RequestAdmin{
+		User_Name: admin_data.User_Name,
+		Email:     admin_data.Email,
+		Password:  admin.Password,
+		CreateAt:  admin_data.CreateAt,
+		UpdatedAt: time.Now(),
+	}
+
+	_, err = uc.Collection.UpdateByID(context.TODO(), admin_data.Id, bson.M{"$set": update_admin})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating password"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
+
 }

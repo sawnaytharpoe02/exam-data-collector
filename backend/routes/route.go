@@ -18,6 +18,7 @@ func SetupRoutes(r *gin.Engine) {
 		user.POST("/create_customer", userController.CreateUser)
 		user.GET("/:id/get_customer", userController.GetUser)
 		user.DELETE("/:id/delete_customer", userController.DeleteUser)
+		user.PUT("/:id/update_customer", userController.UpdateUser)
 	}
 
 	examController := controllers.ExamController{
@@ -39,6 +40,7 @@ func SetupRoutes(r *gin.Engine) {
 		admin.POST("/create_admin", adminController.CreateAdmin)
 		admin.GET("/:id/get_admin", adminController.GetAdmin)
 		admin.POST("/forgot_password", adminController.AdminForgotPassword)
+		admin.POST("/update_password", adminController.AdminUpdatePassword)
 	}
 
 	availableExam := controllers.AvailableExamController{
