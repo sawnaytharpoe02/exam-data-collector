@@ -13,10 +13,6 @@ export interface IExamData {
   section: Section | null;
 }
 
-export interface IExamType {
-  id: number;
-  name: string;
-}
 
 export interface ISection {
   id: number;

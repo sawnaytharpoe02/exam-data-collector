@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { IExamType, ISection } from "@/types";
+import { ISection } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -76,20 +76,25 @@ const FormPage = () => {
     // createCustomerMutation.mutate(payload);
   };
 
-  const examTypes: IExamType[] = [
-    { id: 1, name: "Japan Foundation Test for Basic Japanese(JFT-Basic)" },
-    {
-      id: 2,
-      name: "Kaigo / Nursing care Japanese language evaluation test",
-    },
-    { id: 3, name: "Food service industry Specified Skilled Worker (i) test" },
-  ];
   const sections: ISection[] = [
     { id: 1, name: "JP" },
     { id: 3, name: "MM" },
   ];
-  const availableMonths: string[] = ["Jan", "Nov", "March"];
-  const availableDates: string[] = ["01", "02", "03", "23", "28"];
+
+  const availableExams = data?.map((data) => data.exam_type);
+  const availableMonths = data
+    ?.filter((v: any) => v.exam_type._id === _exam_type)
+    .map((c) => c.months);
+  const availableDates = data
+    ?.filter((v: any) => v.exam_type._id === _exam_type)
+    .map((c) => c.dates);
+
+  console.log("watch exam type", _exam_type);
+
+  console.log("fetched data", data);
+
+  console.log("availableMonths", availableMonths);
+  console.log("availableDates", availableDates);
 
   return (
     <div className="p-5 md:max-w-lg">
@@ -221,9 +226,9 @@ const FormPage = () => {
                       <SelectValue placeholder="Select exam type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {examTypes?.map((val) => (
-                        <SelectItem key={val.id} value={val.name}>
-                          {val.name}
+                      {availableExams?.map((v: any) => (
+                        <SelectItem key={v._id} value={v._id}>
+                          {v.exam_type}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -282,9 +287,9 @@ const FormPage = () => {
                       <SelectValue placeholder="Select a month" />
                     </SelectTrigger>
                     <SelectContent>
-                      {availableMonths?.map((val, i) => (
-                        <SelectItem key={i} value={val}>
-                          {val}
+                      {availableMonths?.map((v, i) => (
+                        <SelectItem key={i} value={v[i]}>
+                          {v}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -326,12 +331,10 @@ const FormPage = () => {
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) => {
-                        const dayString = date
-                          .getDate()
-                          .toString()
-                          .padStart(2, "0"); // Format date as DD
-                        return !availableDates.includes(dayString); // Check for availability
+                        const dayString = date.getDate().toString().padStart(2, "0"); // Format date as DD
+                        return !availableDates?.flat().includes(dayString); // Check for availability
                       }}
+
                       initialFocus
                     />
                   </PopoverContent>
