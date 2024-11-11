@@ -2,7 +2,8 @@ package route
 
 import (
 	"backend/configs"
-	controllers "backend/controllers"
+	"backend/controllers"
+	"backend/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,10 +15,10 @@ func SetupRoutes(r *gin.Engine) {
 	}
 	user := r.Group("/api/customers")
 	{
-		user.GET("/get_all_customers", userController.GetUsers)
+		user.GET("/get_all_customers", middleware.JWTAuthMiddleware(), userController.GetUsers)
 		user.POST("/create_customer", userController.CreateUser)
-		user.GET("/:id/get_customer", userController.GetUser)
-		user.DELETE("/:id/delete_customer", userController.DeleteUser)
+		user.GET("/:id/get_customer", middleware.JWTAuthMiddleware(), userController.GetUser)
+		user.DELETE("/:id/delete_customer", middleware.JWTAuthMiddleware(), userController.DeleteUser)
 		user.PUT("/:id/update_customer", userController.UpdateUser)
 	}
 
@@ -26,8 +27,8 @@ func SetupRoutes(r *gin.Engine) {
 	}
 	exam := r.Group("/api/exams")
 	{
-		exam.GET("/get_all_exams", examController.GetAllExams)
-		exam.POST("/create_exams", examController.CreateExams)
+		exam.GET("/get_all_exams", middleware.JWTAuthMiddleware(), examController.GetAllExams)
+		exam.POST("/create_exams", middleware.JWTAuthMiddleware(), examController.CreateExams)
 	}
 
 	// Admin routes
@@ -37,10 +38,11 @@ func SetupRoutes(r *gin.Engine) {
 	admin := r.Group("/api/admins")
 	{
 		admin.GET("/get_all_admins", adminController.GetAllAdmins)
-		admin.POST("/create_admin", adminController.CreateAdmin)
-		admin.GET("/:id/get_admin", adminController.GetAdmin)
+		admin.POST("/create_admin", middleware.JWTAuthMiddleware(), adminController.CreateAdmin)
+		admin.GET("/:id/get_admin", middleware.JWTAuthMiddleware(), adminController.GetAdmin)
 		admin.POST("/forgot_password", adminController.AdminForgotPassword)
 		admin.POST("/update_password", adminController.AdminUpdatePassword)
+		admin.POST("/login", adminController.LoginAdmin)
 	}
 
 	availableExam := controllers.AvailableExamController{
@@ -53,10 +55,10 @@ func SetupRoutes(r *gin.Engine) {
 	}
 	available_exam := r.Group("/api/available_exams")
 	{
-		available_exam.GET("/get_all_available_exams", availableExam.GetAvailableExams)
-		available_exam.POST("/create_available_exam", availableExamController.CreateAvaliableExam)
-		available_exam.GET("/:id/get_available_exam", availableExam.GetAvailableExam)
-		available_exam.DELETE("/:id/delete_available_exam", availableExam.DeleteAvailableExam)
+		available_exam.GET("/get_all_available_exams", middleware.JWTAuthMiddleware(), availableExam.GetAvailableExams)
+		available_exam.POST("/create_available_exam", middleware.JWTAuthMiddleware(), availableExamController.CreateAvaliableExam)
+		available_exam.GET("/:id/get_available_exam", middleware.JWTAuthMiddleware(), availableExam.GetAvailableExam)
+		available_exam.DELETE("/:id/delete_available_exam", middleware.JWTAuthMiddleware(), availableExam.DeleteAvailableExam)
 	}
 
 }

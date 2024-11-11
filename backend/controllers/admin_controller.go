@@ -4,18 +4,30 @@ import (
 	"backend/models"
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"net/smtp"
+	"os"
 	"time"
 
+	"backend/middleware"
+
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AdminController struct {
 	Collection *mongo.Collection
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
 }
 
 // GetAdmins - Get all admins from MongoDB
@@ -50,6 +62,10 @@ func (uc *AdminController) GetAllAdmins(c *gin.Context) {
 // @Produce json
 // @Param admin body models.CreateAdminRequest true "Admin"
 // @Success 200 {object} models.Admin
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/admins/create_admin [post]
 func (uc *AdminController) CreateAdmin(c *gin.Context) {
 	var create_admin models.CreateAdminRequest
@@ -58,9 +74,12 @@ func (uc *AdminController) CreateAdmin(c *gin.Context) {
 		return
 	}
 
+	hashedPassword, _ := HashPassword(create_admin.Password)
+
 	admin := models.RequestAdmin{
 		User_Name: create_admin.User_Name,
-		Password:  create_admin.Password,
+		Email:     create_admin.Email,
+		Password:  hashedPassword,
 		CreateAt:  time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -82,6 +101,10 @@ func (uc *AdminController) CreateAdmin(c *gin.Context) {
 // @Produce json
 // @Param id path string true "Admin ID"
 // @Success 200 {object} models.Admin
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/admins/{id}/get_admin [get]
 func (uc *AdminController) GetAdmin(c *gin.Context) {
 	adminID := c.Param("id")
@@ -113,6 +136,10 @@ func (uc *AdminController) GetAdmin(c *gin.Context) {
 // @Produce json
 // @Param admin body models.ForgotPasswordRequest true "Admin"
 // @Success 200 {string} string "Email sent successfully"
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/admins/forgot_password [post]
 func (uc *AdminController) AdminForgotPassword(c *gin.Context) {
 	var admin models.ForgotPasswordRequest
@@ -164,6 +191,10 @@ func (uc *AdminController) AdminForgotPassword(c *gin.Context) {
 // @Produce json
 // @Param admin body models.ForgotPasswordUpdateRequest true "Admin"
 // @Success 200 {string} string "Password updated successfully"
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/admins/update_password [post]
 func (uc *AdminController) AdminUpdatePassword(c *gin.Context) {
 	var admin models.ForgotPasswordUpdateRequest
@@ -188,10 +219,13 @@ func (uc *AdminController) AdminUpdatePassword(c *gin.Context) {
 		}
 		return
 	}
+
+	hashedPassword, _ := HashPassword(admin.Password)
+
 	update_admin := models.RequestAdmin{
 		User_Name: admin_data.User_Name,
 		Email:     admin_data.Email,
-		Password:  admin.Password,
+		Password:  hashedPassword,
 		CreateAt:  admin_data.CreateAt,
 		UpdatedAt: time.Now(),
 	}
@@ -204,4 +238,81 @@ func (uc *AdminController) AdminUpdatePassword(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
 
+}
+
+// @Description Admin Login
+// @Tags Admins
+// @Accept json
+// @Produce json
+// @Param admin body models.LoginRequest true "Admin"
+// @Success 200 {object} models.Admin
+// @Success 200 {object} models.LoginResponse
+// @Router /api/admins/login [post]
+func (uc *AdminController) LoginAdmin(c *gin.Context) {
+
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	secretKey := os.Getenv("SECRET_KEY")
+	if secretKey == "" {
+		log.Fatal("SECRET_KEY is not set in .env file")
+	}
+
+	var admin models.LoginRequest
+	if err := c.ShouldBindJSON(&admin); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+		return
+	}
+
+	var admin_data models.Admin
+	err := uc.Collection.FindOne(context.TODO(), bson.M{"email": admin.Email}).Decode(&admin_data)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Admin not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching admin"})
+		}
+		return
+	}
+
+	if admin_data.Token != "" {
+		parsedToken, err := jwt.Parse(admin_data.Token, func(token *jwt.Token) (interface{}, error) {
+			return secretKey, nil
+		})
+		if err == nil && parsedToken.Valid {
+			claims := parsedToken.Claims.(jwt.MapClaims)
+			if exp, ok := claims["exp"].(float64); ok {
+				expirationTime := time.Unix(int64(exp), 0)
+				if time.Now().Before(expirationTime) {
+					c.JSON(http.StatusOK, gin.H{"token": admin_data.Token})
+					return
+				}
+			}
+		}
+	}
+
+	token, err := middleware.CreateToken(admin_data.User_Name)
+
+	fmt.Println(token + "this is token")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(admin_data.Password), []byte(admin.Password))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Incorrect password"})
+		return
+	}
+
+	update := bson.M{"$set": bson.M{"token": token}}
+	_, err = uc.Collection.UpdateOne(context.TODO(), bson.M{"_id": admin_data.Id}, update)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error saving token to database"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }

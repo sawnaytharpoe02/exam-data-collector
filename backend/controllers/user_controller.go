@@ -23,6 +23,10 @@ type UserController struct {
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.User
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/customers/get_all_customers [get]
 func (uc *UserController) GetUsers(c *gin.Context) {
 	var users []models.User
@@ -92,6 +96,10 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 // @Produce json
 // @Param id path string true "User ID"
 // @Success 200 {object} models.User
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/customers/{id}/get_customer [get]
 func (uc *UserController) GetUser(c *gin.Context) {
 	userID := c.Param("id")
@@ -125,6 +133,10 @@ func (uc *UserController) GetUser(c *gin.Context) {
 // @Produce json
 // @Param id path string true "User ID"
 // @Success 200 {string} string "User deleted successfully"
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/customers/{id}/delete_customer [delete]
 func (uc *UserController) DeleteUser(c *gin.Context) {
 	userID := c.Param("id")
@@ -156,6 +168,10 @@ func (uc *UserController) DeleteUser(c *gin.Context) {
 // @Param id path string true "User ID"
 // @Param user body models.UpdateUserRequest true "User data"
 // @Success 200 {object} models.User
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/customers/{id}/update_customer [put]
 func (uc *UserController) UpdateUser(c *gin.Context) {
 	userID := c.Param("id")

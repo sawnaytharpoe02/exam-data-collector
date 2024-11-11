@@ -28,6 +28,10 @@ type Collector struct {
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.AvailableExams
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/available_exams/get_all_available_exams [get]
 func (uc *AvailableExamController) GetAvailableExams(c *gin.Context) {
 	var available_exams []models.AvailableExams
@@ -59,6 +63,10 @@ func (uc *AvailableExamController) GetAvailableExams(c *gin.Context) {
 // @Produce json
 // @Param available_exam body models.CreateAvailableExamRequest true "Available_Exams"
 // @Success 200 {object} models.AvailableExams
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/available_exams/create_available_exam [post]
 func (uc *Collector) CreateAvaliableExam(c *gin.Context) {
 	var create_available_exam models.CreateAvailableExamRequest
@@ -113,6 +121,10 @@ func (uc *Collector) CreateAvaliableExam(c *gin.Context) {
 // @Produce json
 // @Param id path string true "Available Exam ID"
 // @Success 200 {object} models.AvailableExams
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/available_exams/{id}/get_available_exam [get]
 func (uc *AvailableExamController) GetAvailableExam(c *gin.Context) {
 	available_exam_id := c.Param("id")
@@ -144,6 +156,10 @@ func (uc *AvailableExamController) GetAvailableExam(c *gin.Context) {
 // @Produce json
 // @Param id path string true "Available Exam ID"
 // @Success 200 {string} string "Available exam data deleted successfully"
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/available_exams/{id}/delete_available_exam [delete]
 func (uc *AvailableExamController) DeleteAvailableExam(c *gin.Context) {
 	available_exam_id := c.Param("id")
