@@ -42,9 +42,8 @@ type ForgotPasswordUpdateRequest struct {
 }
 
 type LoginRequest struct {
-	User_Name string `json:"user_name" bson:"user_name" binding:"required"`
-	Email     string `json:"email" bson:"email" binding:"required"`
-	Password  string `json:"password" bson:"password" binding:"required"`
+	Email    string `json:"email" bson:"email" binding:"required"`
+	Password string `json:"password" bson:"password" binding:"required"`
 }
 
 type LoginResponse struct {

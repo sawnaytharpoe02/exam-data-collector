@@ -4,6 +4,7 @@ import (
 	"backend/models"
 	"context"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -125,40 +126,65 @@ func (uc *UserController) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// DeleteUser - Delete user by ID
-// @Summary Delete a user
-// @Description Delete a user
+// DeleteUsers - Delete multiple users by their IDs
+// @Summary Delete multiple users
+// @Description Delete multiple users
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param id path string true "User ID"
-// @Success 200 {string} string "User deleted successfully"
+// @Param ids body []string true "Array of User IDs"
+// @Success 200 {string} string "Users deleted successfully"
 // @securityDefinitions.apiKey token
 // @in header
 // @name Authorization
 // @Security JWT
-// @Router /api/customers/{id}/delete_customer [delete]
-func (uc *UserController) DeleteUser(c *gin.Context) {
-	userID := c.Param("id")
-
-	objID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+// @Router /api/customers/delete_customers [delete]
+func (uc *UserController) DeleteUsers(c *gin.Context) {
+	var userIDs []string
+	if err := c.BindJSON(&userIDs); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
-	result, err := uc.Collection.DeleteOne(context.TODO(), bson.M{"_id": objID})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error deleting user"})
+	var objIDs []primitive.ObjectID
+	for _, id := range userIDs {
+		objID, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID: " + id})
+			return
+		}
+		objIDs = append(objIDs, objID)
+	}
+
+	errorChan := make(chan error, len(objIDs))
+	var wg sync.WaitGroup
+
+	for _, objID := range objIDs {
+		wg.Add(1)
+		go func(id primitive.ObjectID) {
+			defer wg.Done()
+			filter := bson.M{"_id": id}
+			_, err := uc.Collection.DeleteOne(context.TODO(), filter)
+			if err != nil {
+				errorChan <- err
+			}
+		}(objID)
+	}
+
+	wg.Wait()
+	close(errorChan)
+
+	var deletionErrors []string
+	for err := range errorChan {
+		deletionErrors = append(deletionErrors, err.Error())
+	}
+
+	if len(deletionErrors) > 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{"errors": deletionErrors})
 		return
 	}
 
-	if result.DeletedCount == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Users deleted successfully"})
 }
 
 // @Description User update

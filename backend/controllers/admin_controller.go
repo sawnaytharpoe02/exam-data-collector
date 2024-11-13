@@ -277,6 +277,8 @@ func (uc *AdminController) LoginAdmin(c *gin.Context) {
 		return
 	}
 
+	fmt.Println(admin_data.Token, "this is admin data token.....")
+
 	if admin_data.Token != "" {
 		parsedToken, err := jwt.Parse(admin_data.Token, func(token *jwt.Token) (interface{}, error) {
 			return secretKey, nil

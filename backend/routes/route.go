@@ -18,7 +18,7 @@ func SetupRoutes(r *gin.Engine) {
 		user.GET("/get_all_customers", middleware.JWTAuthMiddleware(), userController.GetUsers)
 		user.POST("/create_customer", userController.CreateUser)
 		user.GET("/:id/get_customer", middleware.JWTAuthMiddleware(), userController.GetUser)
-		user.DELETE("/:id/delete_customer", middleware.JWTAuthMiddleware(), userController.DeleteUser)
+		user.DELETE("/delete_customers", middleware.JWTAuthMiddleware(), userController.DeleteUsers)
 		user.PUT("/:id/update_customer", userController.UpdateUser)
 	}
 

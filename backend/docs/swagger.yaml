@@ -157,12 +157,9 @@ definitions:
         type: string
       password:
         type: string
-      user_name:
-        type: string
     required:
     - email
     - password
-    - user_name
     type: object
   models.LoginResponse:
     properties:
@@ -444,29 +441,6 @@ paths:
       summary: Get all available exams
       tags:
       - Available_Exams
-  /api/customers/{id}/delete_customer:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a user
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User deleted successfully
-          schema:
-            type: string
-      security:
-      - JWT: []
-      summary: Delete a user
-      tags:
-      - Users
   /api/customers/{id}/get_customer:
     get:
       consumes:
@@ -538,6 +512,32 @@ paths:
           schema:
             $ref: '#/definitions/models.User'
       summary: Create a new user
+      tags:
+      - Users
+  /api/customers/delete_customers:
+    delete:
+      consumes:
+      - application/json
+      description: Delete multiple users
+      parameters:
+      - description: Array of User IDs
+        in: body
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Users deleted successfully
+          schema:
+            type: string
+      security:
+      - JWT: []
+      summary: Delete multiple users
       tags:
       - Users
   /api/customers/get_all_customers:
