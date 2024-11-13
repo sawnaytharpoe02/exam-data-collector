@@ -26,12 +26,26 @@ type RequestAdmin struct {
 }
 
 type CreateAdminRequest struct {
-	User_Name string `json:"name" bson:"name" binding:"required"`
+	User_Name string `json:"user_name" bson:"user_name" binding:"required"`
 	Email     string `json:"email" bson:"email" binding:"required"`
 	Password  string `json:"password" bson:"password" binding:"required"`
-	Token     string `json:"token,omitempty" bson:"token,omitempty"`
 }
 
 type ForgotPasswordRequest struct {
 	Email string `json:"email" bson:"email" binding:"required"`
+}
+
+type ForgotPasswordUpdateRequest struct {
+	Email           string `json:"email" bson:"email" binding:"required"`
+	Password        string `json:"password" bson:"password" binding:"required"`
+	ConfirmPassword string `json:"confirm_password" bson:"confirm_password" binding:"required"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email" bson:"email" binding:"required"`
+	Password string `json:"password" bson:"password" binding:"required"`
+}
+
+type LoginResponse struct {
+	Token string `json:"token"`
 }

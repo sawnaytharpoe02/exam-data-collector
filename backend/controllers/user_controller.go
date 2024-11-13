@@ -4,6 +4,7 @@ import (
 	"backend/models"
 	"context"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,6 +24,10 @@ type UserController struct {
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.User
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/customers/get_all_customers [get]
 func (uc *UserController) GetUsers(c *gin.Context) {
 	var users []models.User
@@ -92,6 +97,10 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 // @Produce json
 // @Param id path string true "User ID"
 // @Success 200 {object} models.User
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/customers/{id}/get_customer [get]
 func (uc *UserController) GetUser(c *gin.Context) {
 	userID := c.Param("id")
@@ -117,17 +126,87 @@ func (uc *UserController) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// DeleteUser - Delete user by ID
-// @Summary Delete a user
-// @Description Delete a user
+// DeleteUsers - Delete multiple users by their IDs
+// @Summary Delete multiple users
+// @Description Delete multiple users
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param ids body []string true "Array of User IDs"
+// @Success 200 {string} string "Users deleted successfully"
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
+// @Router /api/customers/delete_customers [delete]
+func (uc *UserController) DeleteUsers(c *gin.Context) {
+	var userIDs []string
+	if err := c.BindJSON(&userIDs); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	var objIDs []primitive.ObjectID
+	for _, id := range userIDs {
+		objID, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID: " + id})
+			return
+		}
+		objIDs = append(objIDs, objID)
+	}
+
+	errorChan := make(chan error, len(objIDs))
+	var wg sync.WaitGroup
+
+	for _, objID := range objIDs {
+		wg.Add(1)
+		go func(id primitive.ObjectID) {
+			defer wg.Done()
+			filter := bson.M{"_id": id}
+			_, err := uc.Collection.DeleteOne(context.TODO(), filter)
+			if err != nil {
+				errorChan <- err
+			}
+		}(objID)
+	}
+
+	wg.Wait()
+	close(errorChan)
+
+	var deletionErrors []string
+	for err := range errorChan {
+		deletionErrors = append(deletionErrors, err.Error())
+	}
+
+	if len(deletionErrors) > 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{"errors": deletionErrors})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Users deleted successfully"})
+}
+
+// @Description User update
 // @Tags Users
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Success 200 {string} string "User deleted successfully"
-// @Router /api/customers/{id}/delete_customer [delete]
-func (uc *UserController) DeleteUser(c *gin.Context) {
+// @Param user body models.UpdateUserRequest true "User data"
+// @Success 200 {object} models.User
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
+// @Router /api/customers/{id}/update_customer [put]
+func (uc *UserController) UpdateUser(c *gin.Context) {
 	userID := c.Param("id")
+
+	var user_data models.UpdateUserRequest
+	if err := c.ShouldBindJSON(&user_data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	objID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
@@ -135,16 +214,29 @@ func (uc *UserController) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	result, err := uc.Collection.DeleteOne(context.TODO(), bson.M{"_id": objID})
+	var user models.User
+	err = uc.Collection.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error deleting user"})
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching user"})
+		}
 		return
 	}
 
-	if result.DeletedCount == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-		return
+	update_data := models.RequestUser{
+		Name:               user.Name,
+		Email:              user.Email,
+		Prometric_ID:       user.Prometric_ID,
+		Prometric_Password: user.Prometric_Password,
+		Status:             user_data.Status,
+		Dob:                user.Dob,
+		Exam_ID:            user.Exam_ID,
+		Month:              user.Month,
+		Day:                user.Day,
+		UpdatedAt:          time.Now(),
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
+	c.JSON(http.StatusOK, update_data)
 }

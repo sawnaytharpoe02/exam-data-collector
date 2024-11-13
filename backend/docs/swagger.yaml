@@ -47,16 +47,14 @@ definitions:
     properties:
       email:
         type: string
-      name:
-        type: string
       password:
         type: string
-      token:
+      user_name:
         type: string
     required:
     - email
-    - name
     - password
+    - user_name
     type: object
   models.CreateAvailableExamRequest:
     properties:
@@ -140,6 +138,41 @@ definitions:
     required:
     - email
     type: object
+  models.ForgotPasswordUpdateRequest:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - confirm_password
+    - email
+    - password
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  models.UpdateUserRequest:
+    properties:
+      status:
+        type: string
+    required:
+    - status
+    type: object
   models.User:
     properties:
       _id:
@@ -178,7 +211,14 @@ definitions:
     - status
     type: object
 info:
-  contact: {}
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Testing Swagger APIs.
+  termsOfService: http://swagger.io/terms/
+  title: Exam Data Collector API
+  version: "1.0"
 paths:
   /api/admins/{id}/get_admin:
     get:
@@ -198,6 +238,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Admin'
+      security:
+      - JWT: []
       summary: Get admin
       tags:
       - Admins
@@ -220,6 +262,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Admin'
+      security:
+      - JWT: []
       summary: Create a new admin
       tags:
       - Admins
@@ -242,6 +286,8 @@ paths:
           description: Email sent successfully
           schema:
             type: string
+      security:
+      - JWT: []
       summary: AdminForgotPassword - Admin forgot password
       tags:
       - Admins
@@ -262,6 +308,50 @@ paths:
       summary: Get all admins
       tags:
       - Admins
+  /api/admins/login:
+    post:
+      consumes:
+      - application/json
+      description: Admin Login
+      parameters:
+      - description: Admin
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+      tags:
+      - Admins
+  /api/admins/update_password:
+    post:
+      consumes:
+      - application/json
+      description: Admin Password Update
+      parameters:
+      - description: Admin
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.ForgotPasswordUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password updated successfully
+          schema:
+            type: string
+      security:
+      - JWT: []
+      tags:
+      - Admins
   /api/available_exams/{id}/delete_available_exam:
     delete:
       consumes:
@@ -280,6 +370,8 @@ paths:
           description: Available exam data deleted successfully
           schema:
             type: string
+      security:
+      - JWT: []
       summary: Delete a available exam
       tags:
       - Available_Exams
@@ -301,6 +393,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.AvailableExams'
+      security:
+      - JWT: []
       summary: Get available exam
       tags:
       - Available_Exams
@@ -323,6 +417,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.AvailableExams'
+      security:
+      - JWT: []
       summary: Create a new available exam
       tags:
       - Available_Exams
@@ -340,30 +436,11 @@ paths:
             items:
               $ref: '#/definitions/models.AvailableExams'
             type: array
+      security:
+      - JWT: []
       summary: Get all available exams
       tags:
       - Available_Exams
-  /api/customers/{id}/delete_customer:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a user
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User deleted successfully
-          schema:
-            type: string
-      summary: Delete a user
-      tags:
-      - Users
   /api/customers/{id}/get_customer:
     get:
       consumes:
@@ -382,7 +459,37 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.User'
+      security:
+      - JWT: []
       summary: Get user
+      tags:
+      - Users
+  /api/customers/{id}/update_customer:
+    put:
+      consumes:
+      - application/json
+      description: User update
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      security:
+      - JWT: []
       tags:
       - Users
   /api/customers/create_customer:
@@ -407,6 +514,32 @@ paths:
       summary: Create a new user
       tags:
       - Users
+  /api/customers/delete_customers:
+    delete:
+      consumes:
+      - application/json
+      description: Delete multiple users
+      parameters:
+      - description: Array of User IDs
+        in: body
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Users deleted successfully
+          schema:
+            type: string
+      security:
+      - JWT: []
+      summary: Delete multiple users
+      tags:
+      - Users
   /api/customers/get_all_customers:
     get:
       consumes:
@@ -421,6 +554,8 @@ paths:
             items:
               $ref: '#/definitions/models.User'
             type: array
+      security:
+      - JWT: []
       summary: Get all users
       tags:
       - Users
@@ -442,6 +577,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Exam'
+      security:
+      - JWT: []
       summary: Get exam
       tags:
       - Exams
@@ -459,6 +596,8 @@ paths:
             items:
               $ref: '#/definitions/models.Exam'
             type: array
+      security:
+      - JWT: []
       summary: Create exams
       tags:
       - Exams
@@ -476,7 +615,14 @@ paths:
             items:
               $ref: '#/definitions/models.Exam'
             type: array
+      security:
+      - JWT: []
       summary: Get all exams
       tags:
       - Exams
+securityDefinitions:
+  JWT:
+    in: header
+    name: token
+    type: apiKey
 swagger: "2.0"

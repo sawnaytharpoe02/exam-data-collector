@@ -23,6 +23,10 @@ type ExamController struct {
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.Exam
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/exams/get_all_exams [get]
 func (uc *ExamController) GetAllExams(c *gin.Context) {
 	var exams []models.Exam
@@ -48,6 +52,10 @@ func (uc *ExamController) GetAllExams(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} []models.Exam
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/exams/create_exams [post]
 func (uc *ExamController) CreateExams(c *gin.Context) {
 	mockExams := []interface{}{
@@ -88,6 +96,10 @@ func (uc *ExamController) CreateExams(c *gin.Context) {
 // @Produce json
 // @Param id path string true "Exam ID"
 // @Success 200 {object} models.Exam
+// @securityDefinitions.apiKey token
+// @in header
+// @name Authorization
+// @Security JWT
 // @Router /api/exams/{id}/get_exam [get]
 func (uc *ExamController) GetExam(c *gin.Context, examId string) {
 	examID := c.Param("id")
