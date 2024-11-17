@@ -28,10 +28,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { QUERY_KEY } from "@/constants/data";
 import { formSchema } from "@/schemas";
-import { useCreateCustomer } from "@/services/mutations";
-import { useAvailableExams } from "@/services/queries";
+import { getAvailableExams } from "@/services/AvailableExams/api";
+import { useAuthStore } from "@/store/authStore";
 import { CalendarIcon } from "@radix-ui/react-icons";
+import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 
@@ -50,12 +52,15 @@ const FormPage = () => {
       date: undefined,
     },
   });
-
   const _exam_type = form.watch("exam_type");
-  const { data } = useAvailableExams();
+  const { data } = useQuery({
+    queryKey: [QUERY_KEY.availableExams],
+    queryFn: getAvailableExams,
+  });
+  const auth = useAuthStore((state) => state.auth);
+  console.log(auth);
 
   console.log(data);
-  // const createCustomerMutation = useCreateCustomer();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const payload = {
@@ -331,10 +336,12 @@ const FormPage = () => {
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) => {
-                        const dayString = date.getDate().toString().padStart(2, "0"); // Format date as DD
+                        const dayString = date
+                          .getDate()
+                          .toString()
+                          .padStart(2, "0"); // Format date as DD
                         return !availableDates?.flat().includes(dayString); // Check for availability
                       }}
-
                       initialFocus
                     />
                   </PopoverContent>

@@ -7,27 +7,20 @@ const axiosInstance = axios.create({
   baseURL: API_ENDPOINT,
 });
 
-/* 
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = useAuthStore((state) => state.auth);
 
-UNCOMMENT THIS AFTER AUTHENTICATION SETUP IS FINISHED 
+    if (token) {
+      config.headers["authorization"] = `Bearer ${token}`;
+    }
 
-*/
-
-
-// axiosInstance.interceptors.request.use(
-//   (config) => {
-//     const token = useAuthStore((state) => state.token);
-
-//     if (token) {
-//       config.headers["authorization"] = `Bearer ${token}`;
-//     }
-
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 
 export default axiosInstance;

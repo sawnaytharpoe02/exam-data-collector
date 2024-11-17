@@ -1,15 +1,22 @@
 import { create } from "zustand";
 
+type IAuth = {
+  user_id: string;
+  user_name: string;
+  email: string;
+  token: string;
+}
+
 type AuthState = {
-  token: string | null;
+  auth: IAuth | null;
   isAuthenticated: boolean;
-  setToken: (token: string) => void;
-  clearToken: () => void;
+  setAuth: (data: IAuth) => void;
+  clearAuth: () => void;
 };
 
-export const useAuthStore = create<AuthState>(() => ({
-  token: null,
+export const useAuthStore = create<AuthState>((set) => ({
+  auth: null,
   isAuthenticated: false,
-  setToken: (token: string) => ({ token, isAuthenticated: !!token }),
-  clearToken: () => ({ token: null, isAuthenticated: false }),
+  setAuth: (data: IAuth) => set({ auth: data, isAuthenticated: !!data.token }),
+  clearAuth: () => set({ auth: null, isAuthenticated: false }),
 }));

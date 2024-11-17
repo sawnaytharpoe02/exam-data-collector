@@ -22,6 +22,7 @@ import {
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useAuthStore } from "@/store/authStore";
 import {
   BadgeCheck,
   ChevronsUpDown,
@@ -53,12 +54,6 @@ const servicesItems = [
   },
 ];
 
-const user = {
-  name: "admin",
-  email: "admin@gamil.com",
-  avatar: "/avatars/shadcn.jpg",
-};
-
 const DashboardSidebar = () => {
   const pathname = useLocation().pathname.split("/")[2];
   const { open: sidebarOpen } = useSidebar();
@@ -67,7 +62,7 @@ const DashboardSidebar = () => {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="h-16 border-b border-sidebar-border">
-        <NavUser user={user} />
+        <NavUser />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -125,17 +120,15 @@ const DashboardSidebar = () => {
 
 export default DashboardSidebar;
 
-function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+function NavUser() {
   const { isMobile } = useSidebar();
+  const auth = useAuthStore((state) => state.auth);
+  const formattedUserName =
+    (auth?.user_name?.split(" ").length as number) > 2
+      ? auth?.user_name?.split(" ").slice(0, 2).join("")?.toUpperCase()
+      : auth?.user_name?.split("")[0].toUpperCase();
 
+      console.log(auth?.user_name?.split(" ").length);
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -145,12 +138,19 @@ function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage
+                  src={"/avatars/shadcn.jpg"}
+                  alt={auth?.user_name}
+                />
+                <AvatarFallback className="rounded-lg">
+                  {formattedUserName}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">
+                  {auth?.user_name}
+                </span>
+                <span className="truncate text-xs">{auth?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -163,12 +163,19 @@ function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage
+                    src={"/avatars/shadcn.jpg"}
+                    alt={auth?.user_name}
+                  />
+                  <AvatarFallback className="rounded-lg">
+                    {formattedUserName}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">
+                    {auth?.user_name}
+                  </span>
+                  <span className="truncate text-xs">{auth?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export const authSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  password: z.string().nonempty({ message: "Password is required." }).min(6, {
+    message: "Password must be at least 6 characters.",
+  }),
+})
+
 const today = new Date();
 today.setHours(0, 0, 0, 0); // Set time to 00:00:00 to compare only the date part
 
@@ -32,3 +39,4 @@ export const formSchema = z.object({
   month: z.string().nonempty({ message: "Month is required." }),
   date: z.date(),
 });
+

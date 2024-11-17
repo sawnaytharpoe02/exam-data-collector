@@ -33,3 +33,9 @@ export const statuses = [
     icon: XCircle,
   },
 ];
+
+export const QUERY_KEY = {
+  customers: "customers",
+  exams: "exams",
+  availableExams: "available-exams",
+}

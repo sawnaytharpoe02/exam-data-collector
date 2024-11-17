@@ -1,5 +1,5 @@
-import { IReqCustomer } from "@/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { IReqCustomer } from "./types";
 import { AxiosError } from "axios";
 import { createCustomer, updateCustomer } from "./api";
 
@@ -23,6 +23,7 @@ export const useCreateCustomer = () => {
     },
   });
 };
+
 
 export const useUpdateCustomer = () => {
   const queryClient = useQueryClient();

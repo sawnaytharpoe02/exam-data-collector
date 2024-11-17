@@ -1,38 +1,46 @@
 import { useAuthStore } from "@/store/authStore";
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import { useMutation } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 
-interface LoginResponse {
+interface IResAuth {
+  _id: string;
+  user_name: string;
+  email: string;
+  password: string;
   token: string;
+  created_at: string;
+  updated_at: string;
 }
 
-interface LoginCredentials {
+interface IReqAuth {
   email: string;
   password: string;
 }
 
-const login = async (credentials: LoginCredentials): Promise<LoginResponse> => {
-  const response: AxiosResponse<LoginResponse> = await axios.post(
-    `${process.env.VITE_AUTH_API_ENDPOINT}/login`,
+const login = async (credentials: IReqAuth) => {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_ENDPOINT}/admins/login`,
     credentials
   );
+
   return response.data;
 };
 
-export const useLogin = (): UseMutationResult<
-  LoginResponse,
-  AxiosError,
-  LoginCredentials
-> => {
-  const setToken = useAuthStore((state) => state.setToken);
+export const useLogin = () => {
+  const setAuth = useAuthStore((state) => state.setAuth);
+  const navigate = useNavigate();
 
-  return useMutation<LoginResponse, AxiosError, LoginCredentials>({
-    mutationFn: login,
-    onSuccess: (data: LoginResponse) => {
-      setToken(data.token);
-    },
-    onError: (error: AxiosError) => {
-      console.error("Login Failed:", error.response?.data || error.message);
+  return useMutation({
+    mutationFn: (credentials: IReqAuth) => login(credentials),
+    onSuccess: (data: IResAuth) => {
+      setAuth({
+        user_id: data._id,
+        user_name: data.user_name,
+        email: data.email,
+        token: data.token,
+      });
+      navigate("/dashboard");
     },
   });
 };

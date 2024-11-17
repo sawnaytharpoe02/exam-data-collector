@@ -8,9 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { QUERY_KEY } from "@/constants/data";
 import { cn } from "@/lib/utils";
-import { useExams } from "@/services/queries";
-import { IResExams } from "@/types";
+import { getExams } from "@/services/Exams/api";
+import { IResExams } from "@/services/Exams/types";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 const monthsList = [
@@ -39,7 +41,10 @@ const GenerateFormPage = () => {
     "5",
   ]);
 
-  const { data: exams } = useExams();
+  const { data: exams } = useQuery({
+    queryKey: [QUERY_KEY.exams],
+    queryFn: getExams,
+  });
 
   const toggleDate = (date: string) => {
     setSelectedDates((prev) =>
