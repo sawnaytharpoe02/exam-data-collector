@@ -33,6 +33,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		AllowAllOrigins: true,
 		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:    []string{"Origin", "Content-Type", "Accept", "Authorization"},
 	}))
 
 	r.GET("/swagger/*any", gin_swagger.WrapHandler(swagger_files.Handler))
