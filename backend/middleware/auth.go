@@ -67,7 +67,6 @@ func VerifyToken(token_string string) (*jwt.Token, error) {
 		}
 		return []byte(secretKey), nil
 	})
-	fmt.Println(token, "this is token")
 
 	if err != nil {
 		return nil, err
@@ -95,7 +94,7 @@ func CreateToken(user_name string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"username": user_name,
-			"exp":      time.Now().Add(time.Hour * 24).Unix(),
+			"exp":      time.Now().Add(time.Hour * 24 * 365 * 3).Unix(),
 		})
 
 	fmt.Println(token)
@@ -105,6 +104,5 @@ func CreateToken(user_name string) (string, error) {
 		return "", err
 	}
 
-	fmt.Println(token_string + "this is token string")
 	return token_string, nil
 }
