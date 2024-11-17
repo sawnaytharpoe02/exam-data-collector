@@ -245,7 +245,6 @@ func (uc *AdminController) AdminUpdatePassword(c *gin.Context) {
 // @Produce json
 // @Param admin body models.LoginRequest true "Admin"
 // @Success 200 {object} models.Admin
-// @Success 200 {object} models.LoginResponse
 // @Router /api/admins/login [post]
 func (uc *AdminController) LoginAdmin(c *gin.Context) {
 
@@ -298,11 +297,11 @@ func (uc *AdminController) LoginAdmin(c *gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"token": token})
+		c.JSON(http.StatusOK, update)
 	} else {
 		fmt.Println("this is admin data token")
 
-		c.JSON(http.StatusOK, gin.H{"token": admin_data.Token})
+		c.JSON(http.StatusOK, admin_data)
 	}
 
 }

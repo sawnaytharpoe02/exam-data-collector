@@ -161,11 +161,6 @@ definitions:
     - email
     - password
     type: object
-  models.LoginResponse:
-    properties:
-      token:
-        type: string
-    type: object
   models.UpdateUserRequest:
     properties:
       status:
@@ -326,7 +321,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.LoginResponse'
+            $ref: '#/definitions/models.Admin'
       tags:
       - Admins
   /api/admins/update_password:
