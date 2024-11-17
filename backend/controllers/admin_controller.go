@@ -13,7 +13,6 @@ import (
 	"backend/middleware"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -246,7 +245,6 @@ func (uc *AdminController) AdminUpdatePassword(c *gin.Context) {
 // @Produce json
 // @Param admin body models.LoginRequest true "Admin"
 // @Success 200 {object} models.Admin
-// @Success 200 {object} models.LoginResponse
 // @Router /api/admins/login [post]
 func (uc *AdminController) LoginAdmin(c *gin.Context) {
 
@@ -277,44 +275,33 @@ func (uc *AdminController) LoginAdmin(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(admin_data.Token, "this is admin data token.....")
-
-	if admin_data.Token != "" {
-		parsedToken, err := jwt.Parse(admin_data.Token, func(token *jwt.Token) (interface{}, error) {
-			return secretKey, nil
-		})
-		if err == nil && parsedToken.Valid {
-			claims := parsedToken.Claims.(jwt.MapClaims)
-			if exp, ok := claims["exp"].(float64); ok {
-				expirationTime := time.Unix(int64(exp), 0)
-				if time.Now().Before(expirationTime) {
-					c.JSON(http.StatusOK, gin.H{"token": admin_data.Token})
-					return
-				}
-			}
-		}
-	}
-
-	token, err := middleware.CreateToken(admin_data.User_Name)
-
-	fmt.Println(token + "this is token")
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
-		return
-	}
-
 	err = bcrypt.CompareHashAndPassword([]byte(admin_data.Password), []byte(admin.Password))
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Incorrect password"})
 		return
 	}
 
-	update := bson.M{"$set": bson.M{"token": token}}
-	_, err = uc.Collection.UpdateOne(context.TODO(), bson.M{"_id": admin_data.Id}, update)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error saving token to database"})
-		return
+	if admin_data.Token == "" {
+		fmt.Println("this is new token........")
+		token, err := middleware.CreateToken(admin_data.User_Name)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
+			return
+		}
+
+		update := bson.M{"$set": bson.M{"token": token}}
+		_, err = uc.Collection.UpdateOne(context.TODO(), bson.M{"_id": admin_data.Id}, update)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error saving token to database"})
+			return
+		}
+
+		c.JSON(http.StatusOK, update)
+	} else {
+		fmt.Println("this is admin data token")
+
+		c.JSON(http.StatusOK, admin_data)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
 }

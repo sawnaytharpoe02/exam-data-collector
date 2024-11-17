@@ -143,7 +143,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.LoginResponse"
+                            "$ref": "#/definitions/models.Admin"
                         }
                     }
                 }
@@ -893,14 +893,6 @@
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "token": {
                     "type": "string"
                 }
             }

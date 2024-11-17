@@ -151,7 +151,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.LoginResponse"
+                            "$ref": "#/definitions/models.Admin"
                         }
                     }
                 }
@@ -901,14 +901,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "token": {
                     "type": "string"
                 }
             }
