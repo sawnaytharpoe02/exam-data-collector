@@ -43,6 +43,7 @@ func SetupRoutes(r *gin.Engine) {
 		admin.POST("/forgot_password", adminController.AdminForgotPassword)
 		admin.POST("/update_password", adminController.AdminUpdatePassword)
 		admin.POST("/login", adminController.LoginAdmin)
+		admin.POST("/refresh_token", adminController.AdminRefreshToken)
 	}
 
 	availableExam := controllers.AvailableExamController{
