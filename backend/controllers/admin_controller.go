@@ -291,17 +291,86 @@ func (uc *AdminController) LoginAdmin(c *gin.Context) {
 		}
 
 		update := bson.M{"$set": bson.M{"token": token}}
+
 		_, err = uc.Collection.UpdateOne(context.TODO(), bson.M{"_id": admin_data.Id}, update)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error saving token to database"})
 			return
 		}
 
-		c.JSON(http.StatusOK, update)
+		var updated_admin models.Admin
+		err = uc.Collection.FindOne(context.TODO(), bson.M{"_id": admin_data.Id}).Decode(&updated_admin)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching updated user data"})
+			return
+		}
+
+		c.JSON(http.StatusOK, updated_admin)
 	} else {
 		fmt.Println("this is admin data token")
 
 		c.JSON(http.StatusOK, admin_data)
 	}
 
+}
+
+// @Description Admin Refresh Token
+// @Tags Admins
+// @Accept json
+// @Produce json
+// @Param admin body models.RefreshTokenRequest true "Admin"
+// @Success 200 {object} models.Admin
+// @Router /api/admins/refresh_token [post]
+func (uc *AdminController) AdminRefreshToken(c *gin.Context) {
+
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	secretKey := os.Getenv("SECRET_KEY")
+	if secretKey == "" {
+		log.Fatal("SECRET_KEY is not set in .env file")
+	}
+
+	var admin models.RefreshTokenRequest
+	if err := c.ShouldBindJSON(&admin); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+		return
+	}
+
+	var admin_data models.Admin
+	err := uc.Collection.FindOne(context.TODO(), bson.M{"email": admin.Email}).Decode(&admin_data)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Admin not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching admin"})
+		}
+		return
+	}
+
+	token, err := middleware.CreateToken(admin_data.User_Name)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
+		return
+	}
+
+	update := bson.M{"$set": bson.M{"token": token}}
+
+	_, err = uc.Collection.UpdateOne(context.TODO(), bson.M{"_id": admin_data.Id}, update)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error saving token to database"})
+		return
+	}
+
+	var updated_admin models.Admin
+	err = uc.Collection.FindOne(context.TODO(), bson.M{"_id": admin_data.Id}).Decode(&updated_admin)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching updated user data"})
+		return
+	}
+
+	c.JSON(http.StatusOK, updated_admin)
 }

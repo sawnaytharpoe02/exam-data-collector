@@ -161,6 +161,13 @@ definitions:
     - email
     - password
     type: object
+  models.RefreshTokenRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
   models.UpdateUserRequest:
     properties:
       status:
@@ -315,6 +322,27 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Admin'
+      tags:
+      - Admins
+  /api/admins/refresh_token:
+    post:
+      consumes:
+      - application/json
+      description: Admin Refresh Token
+      parameters:
+      - description: Admin
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.RefreshTokenRequest'
       produces:
       - application/json
       responses:

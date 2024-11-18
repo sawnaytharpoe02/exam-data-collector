@@ -46,6 +46,6 @@ type LoginRequest struct {
 	Password string `json:"password" bson:"password" binding:"required"`
 }
 
-type LoginResponse struct {
-	Token string `json:"token"`
+type RefreshTokenRequest struct {
+	Email string `json:"email" bson:"email" binding:"required"`
 }
