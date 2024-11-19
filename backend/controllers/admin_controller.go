@@ -85,7 +85,12 @@ func (uc *AdminController) CreateAdmin(c *gin.Context) {
 
 	_, err := uc.Collection.InsertOne(context.TODO(), admin)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		if mongo.IsDuplicateKeyError(err) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Email already exists"})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create admin"})
 		return
 	}
 
