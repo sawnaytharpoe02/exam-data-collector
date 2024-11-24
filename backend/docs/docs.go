@@ -489,7 +489,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "JWT": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Get a list of users",
@@ -1014,9 +1014,10 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "JWT": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
             "type": "apiKey",
-            "name": "token",
+            "name": "Authorization",
             "in": "header"
         }
     }

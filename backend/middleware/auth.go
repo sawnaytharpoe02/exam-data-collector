@@ -17,7 +17,7 @@ import (
 func JWTAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Retrieve the token from the Authorization header
-		auth_header := c.Request.Header["Token"]
+		auth_header := c.Request.Header["Authorization"]
 
 		if len(auth_header) == 0 {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
@@ -26,7 +26,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		}
 
 		// Remove "Bearer " prefix if present
-		token_string := strings.TrimPrefix(c.Request.Header["Token"][0], "Bearer ")
+		token_string := strings.TrimPrefix(c.Request.Header["Authorization"][0], "Bearer ")
 		if token_string == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token is missing in Authorization header"})
 			c.Abort()

@@ -578,7 +578,7 @@ paths:
               $ref: '#/definitions/models.User'
             type: array
       security:
-      - JWT: []
+      - Bearer: []
       summary: Get all users
       tags:
       - Users
@@ -644,8 +644,9 @@ paths:
       tags:
       - Exams
 securityDefinitions:
-  JWT:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
     in: header
-    name: token
+    name: Authorization
     type: apiKey
 swagger: "2.0"

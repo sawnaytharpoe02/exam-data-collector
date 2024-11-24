@@ -481,7 +481,7 @@
             "get": {
                 "security": [
                     {
-                        "JWT": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Get a list of users",
@@ -1006,9 +1006,10 @@
         }
     },
     "securityDefinitions": {
-        "JWT": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
             "type": "apiKey",
-            "name": "token",
+            "name": "Authorization",
             "in": "header"
         }
     }
