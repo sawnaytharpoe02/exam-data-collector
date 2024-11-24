@@ -16,9 +16,7 @@ const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 const api = axios.create({
   baseURL: API_ENDPOINT,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
 api.interceptors.request.use((config) => {
