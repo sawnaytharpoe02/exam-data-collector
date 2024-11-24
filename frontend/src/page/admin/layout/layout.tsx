@@ -1,5 +1,10 @@
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 import DashboardSidebar from "./dashboard-sidebar";
 
@@ -16,6 +21,7 @@ const DashboardLayout = () => {
           </p>
         </header>
         <div className="flex flex-col gap-4 p-4">
+          <LoadingOverlay />
           <Outlet />
         </div>
       </SidebarInset>

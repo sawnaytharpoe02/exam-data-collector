@@ -38,15 +38,15 @@ api.interceptors.response.use(
       try {
         const email = useAuthStore.getState().email;
         console.log("refresh token email", email);
-        // const response = await api.post<AuthResponse>("/admins/refresh_token", {
-        //   email,
-        // });
-        // const responseData = response.data;
+        const response = await api.post<AuthResponse>("/admins/refresh_token", {
+          email,
+        });
+        const responseData = response.data;
 
-        // console.log("responseData", responseData);
+        console.log("responseData", responseData);
 
-        // useAuthStore.getState().setAuth(responseData);
-        // originalRequest.headers.Authorization = `Bearer ${responseData.token}`;
+        useAuthStore.getState().setAuth(responseData);
+        originalRequest.headers.Authorization = `Bearer ${responseData.token}`;
 
         return api(originalRequest);
       } catch (error) {

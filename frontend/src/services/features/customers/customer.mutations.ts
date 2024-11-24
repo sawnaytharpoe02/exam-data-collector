@@ -1,4 +1,5 @@
 import { QUERY_KEY } from "@/constants/data";
+import { useLoadingOverlay } from "@/store/loadingOverlayStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import {
@@ -56,20 +57,26 @@ export const useUpdateCustomer = () => {
 
 export const useDeleteCustomers = () => {
   const queryClient = useQueryClient();
+  const { setIsLoading } = useLoadingOverlay();
 
   return useMutation({
     mutationFn: (data: string[]) => deleteCustomers(data),
 
+    onMutate: async () => {
+      setIsLoading(true);
+    },
     onSuccess: () => {
       console.log("delete customers success");
     },
     onError: (error: AxiosError) => {
+      setIsLoading(false);
       console.log("delete customers failed", error.message);
     },
     onSettled: async (_, error) => {
       if (error) {
         console.log("Error", error.message);
       } else {
+        setIsLoading(false);
         await queryClient.invalidateQueries({
           queryKey: [QUERY_KEY.customers],
         });
