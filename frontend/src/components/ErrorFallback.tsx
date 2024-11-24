@@ -3,14 +3,10 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
 
 interface ErrorFallbackProps {
-  error: Error | null;
-  resetErrorBoundary: () => void;
+  error?: Error | null;
 }
 
-const ErrorFallback = ({
-  error,
-  resetErrorBoundary,
-}: ErrorFallbackProps) =>  {
+const ErrorFallback = ({ error }: ErrorFallbackProps) => {
   const errorMessage = error?.message || "An unexpected error occurred.";
 
   return (
@@ -24,7 +20,7 @@ const ErrorFallback = ({
             <Button
               variant="secondary"
               className="w-full sm:w-auto"
-              onClick={resetErrorBoundary}>
+              onClick={() => window.location.reload()}>
               Try again
             </Button>
             <Button
@@ -38,6 +34,6 @@ const ErrorFallback = ({
       </Alert>
     </div>
   );
-}
+};
 
 export default ErrorFallback;

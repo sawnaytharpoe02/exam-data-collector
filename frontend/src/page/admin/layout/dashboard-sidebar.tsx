@@ -31,7 +31,7 @@ import {
   PenLine,
   Users,
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const customersItems = [
   {
@@ -122,13 +122,19 @@ export default DashboardSidebar;
 
 function NavUser() {
   const { isMobile } = useSidebar();
-  const auth = useAuthStore((state) => state.auth);
+  const currentUserName = useAuthStore((state) => state.user_name);
+  const email = useAuthStore((state) => state.email);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const navigate = useNavigate();
   const formattedUserName =
-    (auth?.user_name?.split(" ").length as number) > 2
-      ? auth?.user_name?.split(" ").slice(0, 2).join("")?.toUpperCase()
-      : auth?.user_name?.split("")[0].toUpperCase();
+    (currentUserName?.split(" ").length as number) > 2
+      ? currentUserName?.split(" ").slice(0, 2).join("")?.toUpperCase()
+      : currentUserName?.split("")[0].toUpperCase();
 
-      console.log(auth?.user_name?.split(" ").length);
+  const handleLogout = () => {
+    clearAuth();
+    navigate("/login");
+  };
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -140,7 +146,7 @@ function NavUser() {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={"/avatars/shadcn.jpg"}
-                  alt={auth?.user_name}
+                  alt={currentUserName ?? "default"}
                 />
                 <AvatarFallback className="rounded-lg">
                   {formattedUserName}
@@ -148,9 +154,9 @@ function NavUser() {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {auth?.user_name}
+                  {currentUserName}
                 </span>
-                <span className="truncate text-xs">{auth?.email}</span>
+                <span className="truncate text-xs">{email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -165,7 +171,7 @@ function NavUser() {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
                     src={"/avatars/shadcn.jpg"}
-                    alt={auth?.user_name}
+                    alt={currentUserName ?? "default"}
                   />
                   <AvatarFallback className="rounded-lg">
                     {formattedUserName}
@@ -173,9 +179,9 @@ function NavUser() {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {auth?.user_name}
+                    {currentUserName}
                   </span>
-                  <span className="truncate text-xs">{auth?.email}</span>
+                  <span className="truncate text-xs">{email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -185,7 +191,7 @@ function NavUser() {
                 <BadgeCheck className="size-4 mr-3" />
                 <p className="text-[13.5px]">Change Password</p>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="size-4 mr-3" />
                 <p className="text-[13.5px]">Log out</p>
               </DropdownMenuItem>

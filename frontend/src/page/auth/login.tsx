@@ -10,19 +10,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { useLogin } from "@/hooks/useLogin";
 import { authSchema } from "@/schemas";
+import { useLogin } from "@/services/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { LoaderCircle, UserCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import ServiceCollectRobot from "../service-collect-robot";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [errorMsg, setErrorMsg] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof authSchema>>({
     resolver: zodResolver(authSchema),
@@ -31,10 +32,8 @@ const LoginPage = () => {
       password: "",
     },
   });
-  const { mutate: login, isPending: authPending } = useLogin();
-
   const [isExamerLoading, setIsExamerLoading] = useState<boolean>(false);
-
+  const { mutate: login, isPending: authPending } = useLogin();
 
   const onSubmit = async (values: z.infer<typeof authSchema>) => {
     const payload = {
@@ -42,6 +41,10 @@ const LoginPage = () => {
       password: values.password,
     };
     login(payload, {
+      onSuccess: () => {
+        const from = (location.state as any)?.from?.pathname || "/dashboard";
+        navigate(from);
+      },
       onError: (error: any) => {
         setErrorMsg(error.response?.data?.error || "Invalid credentials.");
       },

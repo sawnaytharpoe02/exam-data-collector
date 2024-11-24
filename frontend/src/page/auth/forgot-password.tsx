@@ -47,7 +47,7 @@ const ForgotPasswordPage = () => {
           </CardDescription>
         </CardHeader>
         <CardFooter>
-          <Button className="w-full" onClick={() => navigate("/auth/login")}>
+          <Button className="w-full" onClick={() => navigate("/login")}>
             Back to Login
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
@@ -95,7 +95,7 @@ const ForgotPasswordPage = () => {
               {isLoading ? "Sending..." : "Send Reset Link"}
             </Button>
             <Link
-              to="/auth/login"
+              to="/login"
               className="text-sm text-muted-foreground hover:text-primary">
               Back to Login
             </Link>

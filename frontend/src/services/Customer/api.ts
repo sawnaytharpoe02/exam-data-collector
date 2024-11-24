@@ -1,13 +1,13 @@
 import axiosInstance from "../axios";
 import { IReqCustomer, IResCustomer } from "./types";
 
-export const getCustomers = async () => {
+export const fetchCustomers = async () => {
   return (
     await axiosInstance.get<IResCustomer[]>(`/customers/get_all_customers`)
   ).data;
 };
 
-export const getCustomer = async (id: string) => {
+export const fetchCustomer = async (id: string) => {
   return (
     await axiosInstance.get<IResCustomer>(`/customers/${id}/get_customer`)
   ).data;
