@@ -35,7 +35,7 @@ const LoginPage = () => {
   const [isExamerLoading, setIsExamerLoading] = useState<boolean>(false);
   const { mutate: login, isPending: authPending } = useLogin();
 
-  const onSubmit = async (values: z.infer<typeof authSchema>) => {
+  const onSubmit = (values: z.infer<typeof authSchema>) => {
     const payload = {
       email: values.email,
       password: values.password,
@@ -46,6 +46,7 @@ const LoginPage = () => {
         navigate(from);
       },
       onError: (error: any) => {
+        console.log(error);
         setErrorMsg(error.response?.data?.error || "Invalid credentials.");
       },
     });

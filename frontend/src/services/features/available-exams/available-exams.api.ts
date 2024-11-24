@@ -1,5 +1,5 @@
-import api from "../axios";
-import { IReqAvailableExam, IResAvailableExams } from "./types";
+import api from "../../axios";
+import { IReqAvailableExam, IResAvailableExams } from "./available-exams.types";
 
 export const getAvailableExams = async () => {
   return (

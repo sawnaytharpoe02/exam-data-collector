@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useDeleteCustomers } from "@/services/features/customers/customer.mutations";
 import { TrashIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
@@ -47,6 +48,7 @@ export function CustomersTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const { mutate: deleteCustomers, isPending: isDeletingCustomers } = useDeleteCustomers();
 
   const table = useReactTable({
     data,
@@ -75,8 +77,11 @@ export function CustomersTable<TData, TValue>({
 
   const handleDeleteCustomers = () => {
     // TODO: Implement delete customers logic
-    console.log("Selected customers to delete:", selectedRowIds);
+    console.log("Selected customers to delete:", selectedRowIds.map(String));
+    deleteCustomers(selectedRowIds.map(String));
   };
+
+  if(isDeletingCustomers) return <div>Deleting customers...</div>;
 
   return (
     <div>

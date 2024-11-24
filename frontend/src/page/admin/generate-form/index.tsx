@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/select";
 import { QUERY_KEY } from "@/constants/data";
 import { cn } from "@/lib/utils";
-import { getExams } from "@/services/Exams/api";
-import { IResExams } from "@/services/Exams/types";
+import { getExams } from "@/services/features/exam/exam.api";
+import { IResExams } from "@/services/features/exam/exam.types";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 

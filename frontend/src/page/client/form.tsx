@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/select";
 import { QUERY_KEY } from "@/constants/data";
 import { formSchema } from "@/schemas";
-import { getAvailableExams } from "@/services/AvailableExams/api";
+import { getAvailableExams } from "@/services/features/available-exams/available-exams.api";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";

@@ -19,17 +19,17 @@ export interface ISection {
   name: string;
 }
 
-export interface TCustomer {
-  _id: string;
-  prometric_id: string;
-  prometric_password: string;
-  name: string;
-  email: string;
-  dob: Date | string;
-  exam_type: string;
-  section: Section | null;
-  status: Status;
-  month: Date | string;
-  date: Date | string;
-}
+// export interface TCustomer {
+//   _id: string;
+//   prometric_id: string;
+//   prometric_password: string;
+//   name: string;
+//   email: string;
+//   dob: Date | string;
+//   exam_type: string;
+//   section: Section | null;
+//   status: Status;
+//   month: Date | string;
+//   date: Date | string;
+// }
 

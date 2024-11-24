@@ -10,7 +10,7 @@ export declare type AuthResponse = {
   token: string;
   updated_at: string;
   user_name: string;
-}
+};
 
 const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
@@ -23,6 +23,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
+  console.log("api token", token);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -38,8 +39,13 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const email = useAuthStore.getState().email;
-        const response = await api.post<AuthResponse>("/refresh-token", { email });
+        console.log("refresh token email", email);
+        const response = await api.post<AuthResponse>("/admins/refresh_token", {
+          email,
+        });
         const responseData = response.data;
+
+        console.log("responseData", responseData);
 
         useAuthStore.getState().setAuth(responseData);
         originalRequest.headers.Authorization = `Bearer ${responseData.token}`;
@@ -47,7 +53,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (error) {
         useAuthStore.getState().clearAuth();
-        // window.location.href = "/login";
+        window.location.href = "/login";
         return Promise.reject(error);
       }
     }
@@ -56,5 +62,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-
-

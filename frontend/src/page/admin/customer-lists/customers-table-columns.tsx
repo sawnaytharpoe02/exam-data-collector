@@ -8,7 +8,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { TCustomer } from "@/types";
+// import { TCustomer } from "@/types";
+import { CustomerResponse } from "@/services/features/customers/customer.types";
 import { ColumnDef } from "@tanstack/react-table";
 import clsx from "clsx";
 import {
@@ -49,7 +50,7 @@ const statusBadgeMapping = {
   },
 };
 
-export const CustomersTableColumns: ColumnDef<TCustomer>[] = [
+export const CustomersTableColumns: ColumnDef<Partial<CustomerResponse>>[] = [
   {
     accessorKey: "_id",
     header: ({ table }) => {
