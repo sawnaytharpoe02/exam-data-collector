@@ -24,10 +24,7 @@ type UserController struct {
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.User
-// @securityDefinitions.apiKey token
-// @in header
-// @name Authorization
-// @Security JWT
+// @Security Bearer
 // @Router /api/customers/get_all_customers [get]
 func (uc *UserController) GetUsers(c *gin.Context) {
 	var users []models.User
