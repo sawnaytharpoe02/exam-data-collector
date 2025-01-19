@@ -24,7 +24,7 @@ export const useCreateCustomer = () => {
         console.log("Error", error.message);
       } else {
         await queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.customers],
+          queryKey: [QUERY_KEY.CUSTOMERS],
         });
       }
     },
@@ -48,7 +48,7 @@ export const useUpdateCustomer = () => {
         console.log("Error", error.message);
       } else {
         await queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.customers],
+          queryKey: [QUERY_KEY.CUSTOMERS],
         });
       }
     },
@@ -78,7 +78,7 @@ export const useDeleteCustomers = () => {
       } else {
         setIsLoading(false);
         await queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.customers],
+          queryKey: [QUERY_KEY.CUSTOMERS],
         });
       }
     },

@@ -1,48 +1,54 @@
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { MultiSelect } from "@/components/ui/multi-select";
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { MultiSelect } from '@/components/ui/multi-select';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { QUERY_KEY } from "@/constants/data";
-import { cn } from "@/lib/utils";
-import { getExams } from "@/services/features/exam/exam.api";
-import { IResExams } from "@/services/features/exam/exam.types";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+} from '@/components/ui/select';
+import { QUERY_KEY } from '@/constants/data';
+import { cn } from '@/lib/utils';
+import { useCreateAvailableExam } from '@/services/features/available-exams/available-exams.mutations';
+import { getExams } from '@/services/features/exam/exam.api';
+import { IResExams } from '@/services/features/exam/exam.types';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const monthsList = [
-  { value: "january", label: "January" },
-  { value: "february", label: "February" },
-  { value: "march", label: "March" },
-  { value: "april", label: "April" },
-  { value: "may", label: "May" },
-  { value: "june", label: "June" },
-  { value: "july", label: "July" },
-  { value: "august", label: "August" },
-  { value: "september", label: "September" },
-  { value: "october", label: "October" },
-  { value: "november", label: "November" },
-  { value: "december", label: "December" },
+  { value: 'january', label: 'January' },
+  { value: 'february', label: 'February' },
+  { value: 'march', label: 'March' },
+  { value: 'april', label: 'April' },
+  { value: 'may', label: 'May' },
+  { value: 'june', label: 'June' },
+  { value: 'july', label: 'July' },
+  { value: 'august', label: 'August' },
+  { value: 'september', label: 'September' },
+  { value: 'october', label: 'October' },
+  { value: 'november', label: 'November' },
+  { value: 'december', label: 'December' },
 ];
 
 const GenerateFormPage = () => {
   const [selectedExam, setSelectedExam] = useState<string>();
   const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
   const [selectedDates, setSelectedDates] = useState<string[]>([
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
   ]);
+  const { mutate: createAvailableExam } = useCreateAvailableExam();
+  const navigate = useNavigate();
+
+  console.log('selec month', selectedMonths);
 
   const { data: exams } = useQuery({
-    queryKey: [QUERY_KEY.exams],
+    queryKey: [QUERY_KEY.EXAMS],
     queryFn: getExams,
   });
 
@@ -53,16 +59,22 @@ const GenerateFormPage = () => {
   };
 
   const handleGenerate = () => {
+    if (!selectedExam) {
+      alert('Exam type is required');
+      return;
+    }
+
     const payload = {
       exam_type: selectedExam,
       months: selectedMonths,
       dates: selectedDates,
     };
 
-    console.log(payload);
+    createAvailableExam(payload);
+    navigate('/dashboard/generated-form-lists');
   };
 
-  console.log("exam lists", exams);
+  console.log('exam lists', exams);
 
   return (
     <div>
@@ -115,11 +127,11 @@ const GenerateFormPage = () => {
                   key={date}
                   onClick={() => toggleDate(date.toString())}
                   className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-colors",
-                    "focus:outline-none",
+                    'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-colors',
+                    'focus:outline-none',
                     isSelected
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                   )}
                   aria-pressed={isSelected}>
                   {date}
@@ -130,7 +142,13 @@ const GenerateFormPage = () => {
         </div>
         {/* End Exam Available Date */}
 
-        <Button type="submit" onClick={handleGenerate} className="mt-4">
+        <Button
+          type="submit"
+          disabled={
+            !selectedExam || !selectedDates || selectedMonths.length === 0
+          }
+          onClick={handleGenerate}
+          className="mt-4">
           Generate
         </Button>
       </div>

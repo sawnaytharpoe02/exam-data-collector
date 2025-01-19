@@ -4,38 +4,38 @@ import {
   Circle,
   Clock,
   XCircle,
-} from "lucide-react";
+} from 'lucide-react';
 
 export const statuses = [
   {
-    value: "open",
-    label: "Open",
+    value: 'open',
+    label: 'Open',
     icon: Circle,
   },
   {
-    value: "in progress",
-    label: "In Progress",
+    value: 'in progress',
+    label: 'In Progress',
     icon: Clock,
   },
   {
-    value: "done",
-    label: "Done",
+    value: 'done',
+    label: 'Done',
     icon: CheckCircle,
   },
   {
-    value: "double checked",
-    label: "Double Checked",
+    value: 'double checked',
+    label: 'Double Checked',
     icon: CheckCircle2,
   },
   {
-    value: "failed",
-    label: "Failed",
+    value: 'failed',
+    label: 'Failed',
     icon: XCircle,
   },
 ];
 
 export const QUERY_KEY = {
-  customers: "customers",
-  exams: "exams",
-  availableExams: "available-exams",
-}
+  CUSTOMERS: 'customers',
+  EXAMS: 'exams',
+  AVAILABLE_EXAMS: 'available-exams',
+};

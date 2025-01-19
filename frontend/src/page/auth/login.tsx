@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -7,29 +7,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import { authSchema } from "@/schemas";
-import { useLogin } from "@/services/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { LoaderCircle, UserCircle2 } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { z } from "zod";
-import ServiceCollectRobot from "../service-collect-robot";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
+import { authSchema } from '@/schemas';
+import { useLogin } from '@/services/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import { LoaderCircle, UserCircle2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+import ServiceCollectRobot from '../service-collect-robot';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [errorMsg, setErrorMsg] = useState<string | undefined>("");
+  const [errorMsg, setErrorMsg] = useState<string | undefined>('');
   const form = useForm<z.infer<typeof authSchema>>({
     resolver: zodResolver(authSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
   const [isExamerLoading, setIsExamerLoading] = useState<boolean>(false);
@@ -42,12 +42,12 @@ const LoginPage = () => {
     };
     login(payload, {
       onSuccess: () => {
-        const from = (location.state as any)?.from?.pathname || "/dashboard";
+        const from = (location.state as any)?.from?.pathname || '/dashboard';
         navigate(from);
       },
       onError: (error: any) => {
         console.log(error);
-        setErrorMsg(error.response?.data?.error || "Invalid credentials.");
+        setErrorMsg(error.response?.data?.error || 'Invalid credentials.');
       },
     });
   };
@@ -59,13 +59,18 @@ const LoginPage = () => {
       // Simulate fetching data from backend (replace with actual API call)
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      navigate("/");
+      navigate('/');
     } catch (error) {
       // error handling
     } finally {
       setIsExamerLoading(false);
     }
   };
+
+  useEffect(() => {
+    form.setValue('email', import.meta.env.VITE_ADMIN_USERNAME);
+    form.setValue('password', import.meta.env.VITE_ADMIN_PASSWORD);
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center flex-col bg-gradient-to-r from-pink-100 to-blue-100 p-5 md:p-0">
@@ -133,11 +138,11 @@ const LoginPage = () => {
               <Button type="submit" className="w-full" disabled={authPending}>
                 {authPending ? (
                   <>
-                    <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />{" "}
+                    <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />{' '}
                     <span>Logging In...</span>
                   </>
                 ) : (
-                  "Log In"
+                  'Log In'
                 )}
               </Button>
 
@@ -158,12 +163,12 @@ const LoginPage = () => {
                 disabled={isExamerLoading}>
                 {isExamerLoading ? (
                   <>
-                    <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />{" "}
+                    <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />{' '}
                     <span>Loading...</span>
                   </>
                 ) : (
                   <>
-                    <UserCircle2 className="mr-2 h-4 w-4" />{" "}
+                    <UserCircle2 className="mr-2 h-4 w-4" />{' '}
                     <span>Continue as examer</span>
                   </>
                 )}

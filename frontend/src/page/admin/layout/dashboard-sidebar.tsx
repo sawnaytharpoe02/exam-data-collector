@@ -147,6 +147,7 @@ function NavUser() {
                 <AvatarImage
                   src={"/avatars/shadcn.jpg"}
                   alt={currentUserName ?? "default"}
+                  className="object-cover"
                 />
                 <AvatarFallback className="rounded-lg">
                   {formattedUserName}

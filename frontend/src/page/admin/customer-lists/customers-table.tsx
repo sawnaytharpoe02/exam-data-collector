@@ -16,7 +16,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useDeleteCustomers } from "@/services/features/customers/customer.mutations";
-import { useLoadingOverlay } from "@/store/loadingOverlayStore";
 import { TrashIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
