@@ -35,6 +35,7 @@ import { CalendarIcon } from '@radix-ui/react-icons';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
+import { useCallback, useEffect } from 'react';
 
 const FormPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -53,7 +54,6 @@ const FormPage = () => {
   });
   const _exam_type = form.watch('exam_type');
   const _ava_month = form.watch('month');
-  const _ava_date = form.watch('date');
 
   const { data } = useQuery({
     queryKey: [QUERY_KEY.AVAILABLE_EXAMS],
@@ -91,14 +91,29 @@ const FormPage = () => {
   const availableDates = data
     ?.filter((v: any) => v.exam_type._id === _exam_type)
     .map((c) => c.dates);
+  const flattenedAvailableMonths = availableMonths?.flatMap(
+    (months) => months || []
+  );
+  const flattenedAvailableDates = availableDates?.flatMap(
+    (dates) => dates || []
+  );
 
-  console.log('ava exam', availableExams);
-  console.log('ava month', availableMonths);
+  console.log('flat map', flattenedAvailableDates);
+
+  console.log('flat month', flattenedAvailableMonths);
   console.log('ava date', availableDates);
 
-  console.log('exam type', _exam_type);
-  console.log('choose month', form.watch('month'));
-  console.log('choose date', form.watch('date'));
+  const isDateDisabled = useCallback(
+    (date: Date) => {
+      const dayString = date.getDate().toString().padStart(1, '0'); // Format date as 'D' or 'DD'
+      return !flattenedAvailableDates?.includes(dayString); // Check availability
+    },
+    [flattenedAvailableDates]
+  );
+
+  useEffect(() => {
+    form.setValue('month', '');
+  }, [_exam_type]);
 
   return (
     <div className="p-5 md:max-w-lg">
@@ -300,9 +315,11 @@ const FormPage = () => {
                         <SelectValue placeholder="Select a month" />
                       </SelectTrigger>
                       <SelectContent>
-                        {availableMonths?.map((months) =>
-                          months.map((v, i) => <SelectItem key={i} value={v}>{v}</SelectItem>)
-                        )}
+                        {flattenedAvailableMonths?.map((month, i) => (
+                          <SelectItem key={i} value={month}>
+                            {month}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -340,16 +357,11 @@ const FormPage = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
+                        key={Math.random() * Date.now()}
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) => {
-                          const dayString = date
-                            .getDate()
-                            .toString()
-                            .padStart(2, '0'); // Format date as DD
-                          return !availableDates?.flat().includes(dayString); // Check for availability
-                        }}
+                        disabled={isDateDisabled}
                         initialFocus
                       />
                     </PopoverContent>
