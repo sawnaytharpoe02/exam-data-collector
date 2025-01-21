@@ -31,6 +31,7 @@ import {
 import { QUERY_KEY } from '@/constants/data';
 import { formSchema } from '@/schemas';
 import { fetchAvailableExams } from '@/services/features/available-exams/available-exams.api';
+import { useCreateCustomer } from '@/services/features/customers/customer.mutations';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
@@ -54,35 +55,12 @@ const FormPage = () => {
   });
   const _exam_type = form.watch('exam_type');
   const _ava_month = form.watch('month');
+  const { mutate: createCustomerExamForm, isPending } = useCreateCustomer();
 
   const { data } = useQuery({
     queryKey: [QUERY_KEY.AVAILABLE_EXAMS],
     queryFn: fetchAvailableExams,
   });
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const payload = {
-      prometric_id: values.prometric_id,
-      prometric_password: values.prometric_password,
-      name: values.name,
-      email: values.email,
-      dob: dayjs(values.dob).format('YYYY-MM-DD'),
-      exam_type: values.exam_type,
-      section: !_exam_type.includes('Kaigo / Nursing')
-        ? (values.section = null)
-        : values.section,
-      date: dayjs(values.date).date().toString(),
-      month: values.month,
-    };
-
-    console.log('Submit value', payload);
-    // createCustomerMutation.mutate(payload);
-  };
-
-  const sections: ISection[] = [
-    { id: 1, name: 'JP' },
-    { id: 3, name: 'MM' },
-  ];
 
   const availableExams = data?.map((data) => data.exam_type);
   const availableMonths = data
@@ -97,11 +75,33 @@ const FormPage = () => {
   const flattenedAvailableDates = availableDates?.flatMap(
     (dates) => dates || []
   );
+  const selectedExamType = data?.find(
+    (v: any) => v.exam_type._id === _exam_type
+  )?.exam_type.exam_type;
 
-  console.log('flat map', flattenedAvailableDates);
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const payload = {
+      prometric_id: values.prometric_id,
+      prometric_password: values.prometric_password,
+      name: values.name,
+      email: values.email,
+      dob: dayjs(values.dob).format('YYYY-MM-DD'),
+      exam_id: values.exam_type,
+      section: !selectedExamType?.includes('Kaigo / Nursing')
+        ? (values.section = null)
+        : values.section,
+      day: dayjs(values.date).date().toString(),
+      month: values.month,
+    };
 
-  console.log('flat month', flattenedAvailableMonths);
-  console.log('ava date', availableDates);
+    console.log('Submit value', payload);
+    createCustomerExamForm(payload);
+  };
+
+  const sections: ISection[] = [
+    { id: 1, name: 'JP' },
+    { id: 3, name: 'MM' },
+  ];
 
   const isDateDisabled = useCallback(
     (date: Date) => {
@@ -252,7 +252,7 @@ const FormPage = () => {
                     <SelectTrigger>
                       <SelectValue placeholder="Select exam type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-w-[350px]">
                       {availableExams?.map((v: any) => (
                         <SelectItem key={v._id} value={v._id}>
                           {v.exam_type}
@@ -267,7 +267,7 @@ const FormPage = () => {
           />
 
           {/* Section */}
-          {_exam_type.includes('Kaigo / Nursing') && (
+          {selectedExamType?.includes('Kaigo / Nursing') && (
             <FormField
               control={form.control}
               name="section"
@@ -373,8 +373,7 @@ const FormPage = () => {
           )}
 
           <Button type="submit">
-            {/* {createCustomerMutation.isPending ? "Submitting..." : "Submit"} */}
-            submit
+            {isPending ? 'Submitting...' : 'Submit'}
           </Button>
         </form>
       </Form>

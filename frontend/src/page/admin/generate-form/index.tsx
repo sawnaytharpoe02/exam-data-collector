@@ -12,6 +12,7 @@ import { QUERY_KEY } from '@/constants/data';
 import { cn } from '@/lib/utils';
 import { useCreateAvailableExam } from '@/services/features/available-exams/available-exams.mutations';
 import { getExams } from '@/services/features/exam/exam.api';
+import { useExams } from '@/services/features/exam/exam.queries';
 import { IResExams } from '@/services/features/exam/exam.types';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -47,10 +48,7 @@ const GenerateFormPage = () => {
 
   console.log('selec month', selectedMonths);
 
-  const { data: exams } = useQuery({
-    queryKey: [QUERY_KEY.EXAMS],
-    queryFn: getExams,
-  });
+  const { data: exams } = useExams();
 
   const toggleDate = (date: string) => {
     setSelectedDates((prev) =>

@@ -3,13 +3,7 @@ import { RouterProvider } from 'react-router-dom';
 import './App.css';
 import router from './routes/routes';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 function App() {
   return (

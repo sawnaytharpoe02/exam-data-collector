@@ -7,7 +7,7 @@ export const fetchCustomers = async (): Promise<CustomerRequest[]> => {
       .data;
   } catch (error) {
     console.error("Error fetching customers", error);
-    throw error;
+    throw error
   }
 };
 
@@ -17,7 +17,7 @@ export const fetchCustomer = async (id: string): Promise<CustomerResponse> => {
       .data;
   } catch (error) {
     console.error("Error fetching customer", error);
-    throw error;
+    throw error
   }
 };
 
